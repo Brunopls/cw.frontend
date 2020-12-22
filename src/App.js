@@ -1,62 +1,65 @@
-import React from 'react';
-import logo from './logo.svg';
-import 'antd/dist/antd.css';
-import { Layout } from 'antd';
-import NavBar from './components/NavBarComponent/NavBar'
-import './App.css';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from "react-router-dom";
+import React from "react";
+import logo from "./logo.svg";
+import "antd/dist/antd.css";
+import { Layout } from "antd";
+import "./App.css";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import UserContext from './core/contexts/user'
+import NavBar from "./components/NavBarComponent/NavBar";
+import Register from "./containers/RegisterComponent/Register";
+
+import UserContext from "./core/contexts/user";
 const { Header, Footer, Sider, Content } = Layout;
+
+const contentStyles = {
+  paddingTop: 15,
+};
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: {loggedIn: false}
-    }
+      user: { loggedIn: false },
+    };
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
-    
   }
 
   login(user) {
     console.log("User is now being set on the context");
     user.loggedIn = true;
-    this.setState({user:user});
+    this.setState({ user: user });
   }
 
   logout() {
     console.log("Removing user from the app context");
-    this.setState({user: {loggedIn:false}});
+    this.setState({ user: { loggedIn: false } });
   }
 
-  render () {
+  render() {
     const context = {
       user: this.state.user,
       login: this.login,
-      logout: this.logout
+      logout: this.logout,
     };
 
     return (
       <Layout>
-      <UserContext.Provider value={context}>
-        <Router>
-          <Header>
-            <NavBar />
-          </Header>
+        <UserContext.Provider value={context}>
+          <Router>
+            <Header>
+              <NavBar />
+            </Header>
 
-          <Content>
-          </Content>
+            <Content style={contentStyles}>
+              <Switch>
+                <Route path="/register" children={<Register />} />
+              </Switch>
+            </Content>
 
-          <Footer style={{ textAlign: 'center' }}>Created for 304CEM</Footer>
-
-        </Router>
-      </UserContext.Provider>  
+            <Footer style={{ textAlign: "center" }}>Created for 304CEM</Footer>
+          </Router>
+        </UserContext.Provider>
       </Layout>
     );
   }
