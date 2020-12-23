@@ -5,7 +5,7 @@ exports.emailRules = [
 ];
 
 exports.passwordRules = [
-  { required: true, message: "Please input your password!" },
+  { required: true, min: 6,  message: "Please input your password!" },
 ];
 
 exports.signUpCodeRules = [
@@ -14,7 +14,6 @@ exports.signUpCodeRules = [
 
 exports.confirmRules = [
   { required: true, message: "Please confirm your password!" },
-  // rules can include function handlers in which you can apply additional logic
   ({ getFieldValue }) => ({
     validator(rule, value) {
       if (!value || getFieldValue("password") === value) {
