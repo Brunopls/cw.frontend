@@ -8,6 +8,10 @@ exports.passwordRules = [
   { required: true, message: "Please input your password!" },
 ];
 
+exports.signUpCodeRules = [
+  { required: true, message: "Please provide a sign-up code!" },
+];
+
 exports.confirmRules = [
   { required: true, message: "Please confirm your password!" },
   // rules can include function handlers in which you can apply additional logic

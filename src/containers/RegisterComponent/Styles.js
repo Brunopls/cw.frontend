@@ -1,6 +1,4 @@
 
-
-// add some layout to keep the form organised on different screen sizes
 exports.formItemLayout = {
   labelCol: { xs: { span: 24 }, sm: { span: 6 } },
   wrapperCol: { xs: { span: 24 }, sm: { span: 12 } },

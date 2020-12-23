@@ -4,7 +4,7 @@ import { status, json } from '../../core/utilities/requestHandlers';
 import config from '../../core/config.json'
 import { Link } from 'react-router-dom'
 
-import { emailRules, passwordRules, confirmRules, usernameRules } from './Rules'
+import { emailRules, passwordRules, confirmRules, usernameRules, signUpCodeRules } from './Rules'
 import { formItemLayout, tailFormItemLayout, centeredDiv } from './Styles'
 
 class RegisterForm extends React.Component {
@@ -43,7 +43,7 @@ class RegisterForm extends React.Component {
         if(this.state.loading) {
             return (
                 <div style={centeredDiv}>
-                    <Spin />
+                    <Spin size="large" />
                 </div>
             )
         }
@@ -61,9 +61,9 @@ class RegisterForm extends React.Component {
         if (this.state.failed) {
             return (
                 <Result
-                    status="warning"
-                    title="Error registering!"
-                    subTitle="There was an error registering this user."
+                    status="error"
+                    title="Registration failed."
+                    subTitle="There was an error registering you."
                     extra={<>
                         <Button onClick={() => this.setState({failed: false})} key="register">Back</Button></>} 
                         />
@@ -71,6 +71,10 @@ class RegisterForm extends React.Component {
         }
             return (
                 <Form {...formItemLayout} name="register" onFinish={this.onFinish} scrollToFirstError >
+                    <Form.Item name="signUpCode" label="Sign-up Code" rules={signUpCodeRules} >
+                        <Input />
+                    </Form.Item>
+                    
                     <Form.Item name="fullName" label="Full Name" rules={usernameRules} >
                         <Input />
                     </Form.Item>
