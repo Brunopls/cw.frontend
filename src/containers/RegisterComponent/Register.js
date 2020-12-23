@@ -14,7 +14,7 @@ class RegisterForm extends React.Component {
         this.state = {
             successful: false,
             failed: false,
-            loading: false
+            loading: false,
         }
         this.onFinish = this.onFinish.bind(this);
     }
@@ -31,10 +31,10 @@ class RegisterForm extends React.Component {
         })
             .then(status)
             .then(json)
-            .then(data => {
+            .then(response => {
                 this.setState({loading: false, successful: true})
             })
-            .catch(err => {
+            .catch((err) => {
                 this.setState({loading: false, failed: true})
             });
     };
