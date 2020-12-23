@@ -4,8 +4,8 @@ import { status, json } from '../../core/utilities/requestHandlers';
 import config from '../../core/config.json'
 import { Link } from 'react-router-dom'
 
-import { emailRules, passwordRules, confirmRules, usernameRules, signUpCodeRules } from './Rules'
-import { formItemLayout, tailFormItemLayout, centeredDiv } from './Styles'
+import { emailRules, passwordRules, confirmRules, usernameRules, signUpCodeRules } from './RegisterRules'
+import { formItemLayout, tailFormItemLayout, centeredDiv } from './RegisterStyles'
 
 class RegisterForm extends React.Component {
 

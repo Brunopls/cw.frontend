@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import NavBar from "./components/NavBarComponent/NavBar";
 import Register from "./containers/RegisterComponent/Register";
+import Login from "./containers/LoginComponent/Login";
 
 import UserContext from "./core/contexts/user";
 const { Header, Footer, Sider, Content } = Layout;
@@ -54,6 +55,7 @@ class App extends React.Component {
             <Content style={contentStyles}>
               <Switch>
                 <Route path="/register" children={<Register />} />
+                <Route path="/login" children={<Login />} />
               </Switch>
             </Content>
 
