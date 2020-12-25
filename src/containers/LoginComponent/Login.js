@@ -2,7 +2,6 @@ import React from "react";
 import { Form, Input, Button, Result, Spin } from "antd";
 import { status, json } from "../../core/utilities/requestHandlers";
 import config from "../../core/config.json";
-import { Link } from "react-router-dom";
 
 import { emailRules, passwordRules } from "./LoginRules";
 import { formItemLayout, tailFormItemLayout, centeredDiv } from "./LoginStyles";

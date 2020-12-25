@@ -3,27 +3,21 @@ import { Card, Space, Badge, Button } from "antd";
 import { Link } from "react-router-dom";
 import {
   EyeOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
 } from "@ant-design/icons";
 
 class PropertyCard extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
+    const viewLink = "/property/view/"+this.props._id
     return (
       <Card
         hoverable
         title={this.props.title}
         key={this.props._id}
-        // actions={[<>
-        //   <Button type="primary" key="view">
-        //         <Link to="/property/"><EyeOutlined key="view" /></Link>
-        //   </Button>
-        //   </>
-        // ]}
+        actions={[
+          <Button key="view">
+                <Link to={viewLink}><EyeOutlined key="view" /></Link>
+          </Button>
+        ]}
         extra={
           <>
             <Space>
@@ -36,7 +30,17 @@ class PropertyCard extends React.Component {
             </Space>
           </>
         }
-      ></Card>
+      >
+        <Card type="inner">
+          Location: {this.props.location}
+        </Card>
+        <Card type="inner">
+          Category: {this.props.propertyCategory}
+        </Card>
+        <Card type="inner">
+          Price: £{this.props.askingPrice}
+        </Card>
+      </Card>
     );
   }
 }

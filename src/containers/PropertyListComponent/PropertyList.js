@@ -1,24 +1,12 @@
 import React from "react";
 import {
-  Form,
-  Input,
-  Button,
   Result,
   List,
-  Card,
-  Divider,
-  PageHeader,
-  Badge,
-  Space,
 } from "antd";
 
 import PropertyCard from "../PropertyCardComponent/PropertyCard";
 
 class PropertyList extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     if (!this.props.properties.length) {
       return (
@@ -33,11 +21,11 @@ class PropertyList extends React.Component {
     return (
       <>
         <List
-          grid={{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3 }}
+          grid={{ gutter: 24, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3 }}
           dataSource={this.props.properties}
-          renderItem={(item) => (
+          renderItem={(property) => (
             <List.Item>
-              <PropertyCard {...item} />
+              <PropertyCard {...property} />
             </List.Item>
           )}
         />

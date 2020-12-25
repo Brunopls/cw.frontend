@@ -1,5 +1,4 @@
 import React from "react";
-import logo from "./logo.svg";
 import "antd/dist/antd.css";
 import { Layout } from "antd";
 import "./App.css";
@@ -12,7 +11,7 @@ import Home from "./containers/HomeComponent/Home";
 import Property from "./containers/PropertyComponent/Property";
 
 import UserContext from "./core/contexts/user";
-const { Header, Footer, Sider, Content } = Layout;
+const { Header, Footer, Content } = Layout;
 
 const contentStyles = {
   padding: 35,
@@ -58,7 +57,7 @@ class App extends React.Component {
               <Switch>
                 <Route path="/register" children={<Register />} />
                 <Route path="/login" children={<Login />} />
-                <Route path="/property" children={<Property />} />
+                <Route path="/property/view/:id" children={(props) => <Property read {...props} />} />
                 <Route path="/" children={<Home />} />
               </Switch>
             </Content>
