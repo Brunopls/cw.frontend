@@ -4,6 +4,8 @@ import { Menu } from "antd";
 import { Link } from "react-router-dom";
 import UserContext from "../../core/contexts/user";
 
+import { HomeFilled } from "@ant-design/icons";
+
 function Nav(props) {
   const context = useContext(UserContext);
   const loggedIn = context.user.loggedIn;
@@ -34,8 +36,10 @@ function Nav(props) {
   }
   return (
     <>
-      <div className="logo" />
       <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
+        <Menu.Item disabled key="0">
+          <HomeFilled />
+        </Menu.Item>
         <Menu.Item key="1">
           <Link to="/">Home</Link>
         </Menu.Item>

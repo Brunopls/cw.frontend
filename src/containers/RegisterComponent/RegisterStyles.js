@@ -1,4 +1,3 @@
-
 exports.formItemLayout = {
   labelCol: { xs: { span: 24 }, sm: { span: 6 } },
   wrapperCol: { xs: { span: 24 }, sm: { span: 12 } },
@@ -9,10 +8,10 @@ exports.tailFormItemLayout = {
 };
 
 exports.centeredDiv = {
-      textAlign: "center",
-      background: { red: 0, green: 0, blue: 0, alpha: 0.05 },
-      borderRadius: 4,
-      marginBottom: 20,
-      padding: 30,
-      margin: 20
-  }
+  textAlign: "center",
+  background: { red: 0, green: 0, blue: 0, alpha: 0.05 },
+  borderRadius: 4,
+  marginBottom: 20,
+  padding: 30,
+  margin: 20,
+};

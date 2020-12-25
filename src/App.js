@@ -8,12 +8,14 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import NavBar from "./components/NavBarComponent/NavBar";
 import Register from "./containers/RegisterComponent/Register";
 import Login from "./containers/LoginComponent/Login";
+import Home from "./containers/HomeComponent/Home";
+import Property from "./containers/PropertyComponent/Property";
 
 import UserContext from "./core/contexts/user";
 const { Header, Footer, Sider, Content } = Layout;
 
 const contentStyles = {
-  paddingTop: 15,
+  padding: 35,
 };
 
 class App extends React.Component {
@@ -56,6 +58,8 @@ class App extends React.Component {
               <Switch>
                 <Route path="/register" children={<Register />} />
                 <Route path="/login" children={<Login />} />
+                <Route path="/property" children={<Property />} />
+                <Route path="/" children={<Home />} />
               </Switch>
             </Content>
 
