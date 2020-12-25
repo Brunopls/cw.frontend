@@ -57,7 +57,10 @@ class App extends React.Component {
               <Switch>
                 <Route path="/register" children={<Register />} />
                 <Route path="/login" children={<Login />} />
-                <Route path="/property/view/:id" children={(props) => <Property read {...props} />} />
+                <Route
+                  path="/property/view/:id"
+                  children={(props) => <Property read {...props} />}
+                />
                 <Route path="/" children={<Home />} />
               </Switch>
             </Content>

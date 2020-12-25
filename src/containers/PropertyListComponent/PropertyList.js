@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  Result,
-  List,
-} from "antd";
+import { Result, List } from "antd";
 
 import PropertyCard from "../PropertyCardComponent/PropertyCard";
 

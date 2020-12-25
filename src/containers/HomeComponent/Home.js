@@ -11,12 +11,12 @@ import {
   Form,
   Button,
   Select,
-  Pagination
+  Pagination,
 } from "antd";
 
 import PropertyList from "../PropertyListComponent/PropertyList";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
-import { formItemLayout } from "./SearchFormStyles"
+import { formItemLayout } from "./SearchFormStyles";
 
 const { Option } = Select;
 
@@ -65,9 +65,9 @@ class Home extends React.Component {
       });
   }
 
-  async onChangePage (pageNumber) {
-    await this.setState({ page: pageNumber })
-    this.loadProperties()
+  async onChangePage(pageNumber) {
+    await this.setState({ page: pageNumber });
+    this.loadProperties();
   }
 
   onFinish = (values) => {
@@ -77,19 +77,25 @@ class Home extends React.Component {
   };
 
   render() {
-    let features = []
-    if(this.state.features){
+    let features = [];
+    if (this.state.features) {
       this.state.features.map((feature) => {
-        return features.push(<Option key={feature._id} value={feature._id}>{feature.title}</Option>)
-      })
-  }
+        return features.push(
+          <Option key={feature._id} value={feature._id}>
+            {feature.title}
+          </Option>
+        );
+      });
+    }
 
-  let categories = []
-  if(this.state.categories){
-    this.state.categories.map((category) => {
-      return categories.push(<Option value={category._id}>{category.title}</Option>)
-    })
-}
+    let categories = [];
+    if (this.state.categories) {
+      this.state.categories.map((category) => {
+        return categories.push(
+          <Option value={category._id}>{category.title}</Option>
+        );
+      });
+    }
 
     return (
       <>
@@ -101,28 +107,44 @@ class Home extends React.Component {
             ) : (
               <PropertyList properties={this.state.properties} />
             )}
-            <Pagination defaultCurrent={1} pageSize={this.state.limit} total={this.state.count} onChange={this.onChangePage} />
+            <Pagination
+              defaultCurrent={1}
+              pageSize={this.state.limit}
+              total={this.state.count}
+              onChange={this.onChangePage}
+            />
             {/* <Pagination defaultCurrent={1} total={20} onChange={(pageNumber)=>this.setState({page: pageNumber})} /> */}
           </Col>
           <Col span={6}>
             <Card style={{ marginLeft: 10 }} title="Search Parameters">
-              <Form name="search" onFinish={this.onFinish} {...formItemLayout} scrollToFirstError>
-                  <Form.Item name="search" label="Search Terms">
-                    <Input placeholder="Search query" />
-                  </Form.Item>
-                  <Form.Item name="features" label="Features">
+              <Form
+                name="search"
+                onFinish={this.onFinish}
+                {...formItemLayout}
+                scrollToFirstError
+              >
+                <Form.Item name="search" label="Search Terms">
+                  <Input placeholder="Search query" />
+                </Form.Item>
+                <Form.Item name="features" label="Features">
                   <Select mode="multiple" placeholder="Property features">
                     {features}
                   </Select>
-                  </Form.Item>
-                  <Form.Item name="categories" label="Categories">
+                </Form.Item>
+                <Form.Item name="categories" label="Categories">
                   <Select mode="multiple" placeholder="Property categories">
                     {categories}
                   </Select>
-                  </Form.Item>
-                  <Form.Item name="limit" label="Result Limit">
-                    <InputNumber min={1} max={50} defaultValue={10} initialValues={10} placeholder="Limit"/>
-                  </Form.Item>
+                </Form.Item>
+                <Form.Item name="limit" label="Result Limit">
+                  <InputNumber
+                    min={1}
+                    max={50}
+                    defaultValue={10}
+                    initialValues={10}
+                    placeholder="Limit"
+                  />
+                </Form.Item>
                 <Form.Item>
                   <Button type="primary" htmlType="submit">
                     Search

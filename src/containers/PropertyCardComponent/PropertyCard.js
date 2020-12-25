@@ -1,22 +1,23 @@
 import React from "react";
-import { Card, Space, Badge, Button } from "antd";
+import { Card, Space, Badge, Button, Image } from "antd";
 import { Link } from "react-router-dom";
-import {
-  EyeOutlined,
-} from "@ant-design/icons";
+import { EyeOutlined } from "@ant-design/icons";
 
 class PropertyCard extends React.Component {
   render() {
-    const viewLink = "/property/view/"+this.props._id
+    const viewLink = "/property/view/" + this.props._id;
     return (
       <Card
         hoverable
+        cover={<Image style={{borderRadius:25, padding: 15}} src="https://picsum.photos/1204/720" />}
         title={this.props.title}
         key={this.props._id}
         actions={[
           <Button key="view">
-                <Link to={viewLink}><EyeOutlined key="view" /></Link>
-          </Button>
+            <Link to={viewLink}>
+              <EyeOutlined key="view" />
+            </Link>
+          </Button>,
         ]}
         extra={
           <>
@@ -31,15 +32,9 @@ class PropertyCard extends React.Component {
           </>
         }
       >
-        <Card type="inner">
-          Location: {this.props.location}
-        </Card>
-        <Card type="inner">
-          Category: {this.props.propertyCategory}
-        </Card>
-        <Card type="inner">
-          Price: £{this.props.askingPrice}
-        </Card>
+        <Card type="inner">Location: {this.props.location}</Card>
+        <Card type="inner">Category: {this.props.propertyCategory}</Card>
+        <Card type="inner">Price: £{this.props.askingPrice}</Card>
       </Card>
     );
   }
