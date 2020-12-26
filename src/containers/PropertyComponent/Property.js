@@ -23,19 +23,22 @@ class Property extends React.Component {
       id: 0,
       property: {},
       loading: false,
+      sendingMessage: false,
+      messageSentSuccessfully: false,
+      showMessageForm: true,
     };
     this.loadProperty = this.loadProperty.bind(this);
   }
 
   async componentDidMount() {
-    const { id } = this.props.match.params;
-    await this.setState({ id: id });
-    this.loadProperty();
+      const { id } = this.props.match.params;
+      await this.setState({ id: id });
+      this.loadProperty();
   }
 
   loadProperty() {
     this.setState({ loading: true });
-    fetch(`${config.BACK_END_URL}/api/properties/${this.state.id}`, {
+    fetch(`${config.BACK_END_URL}/api/properties/get/${this.state.id}`, {
       method: "GET",
     })
       .then(status)
@@ -51,6 +54,43 @@ class Property extends React.Component {
       .catch((error) => {
         this.setState({ loading: false, failed: true });
       });
+  }
+  
+  sendMessage = (values) => {
+    let { ...data } = values;
+    data = {...data, user: this.state.property.user, property: this.state.property._id}
+    this.setState({ sendingMessage: true, showMessageForm: false });
+    fetch(
+      `${config.BACK_END_URL}/api/properties/message`,
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then(status)
+      .then(json)
+      .then((response) => {
+        this.setState({
+          sendingMessage: false,
+          showMessageForm: false,
+          messageSentSuccessfully: true,
+        });
+      })
+      .catch((error) => {
+        this.setState({ failureSendingMessage: true });
+      });
+  }
+
+  componentDidUpdate(){
+    if(this.state.messageSentSuccessfully) 
+      this.timeout = setTimeout(() => this.setState({ messageSentSuccessfully: false, showMessageForm: true}), 2000)
+  }
+
+  componentWillUnmount(){
+      clearTimeout(this.timeout)
   }
 
   render() {
@@ -74,110 +114,105 @@ class Property extends React.Component {
       );
     }
 
-    if (this.props.read) {
-      return (
-        <>
-          <Row>
-            <Col span={18}>
-              <Card
-                title={this.state.property.title}
-                extra={
-                  <Space>
-                    {this.state.property.highPriority ? (
-                      <Badge dot text="High Priority" status="success" />
-                    ) : null}
-                    {this.state.property.underOffer ? (
-                      <Badge dot text="Under Offer" status="processing" />
-                    ) : null}
-                  </Space>
-                }
-              >
-                <Card type="inner" style={{ marginBottom: 10 }} title="Title">
-                  {this.state.property.title}
-                </Card>
-                <Card
-                  type="inner"
-                  style={{ marginBottom: 10 }}
-                  title="Description"
-                >
-                  {this.state.property.description}
-                </Card>
-                <Card
-                  type="inner"
-                  style={{ marginBottom: 10 }}
-                  title="Location"
-                >
-                  {this.state.property.location}
-                </Card>
-                <Card
-                  type="inner"
-                  style={{ marginBottom: 10 }}
-                  title="Asking Price"
-                >
-                  £{this.state.property.askingPrice}
-                </Card>
-                <Card type="inner" style={{ marginBottom: 10 }} title="Agent">
-                  {this.state.property.user}
-                </Card>
-                <Card
-                  type="inner"
-                  style={{ marginBottom: 10 }}
-                  title="Category"
-                >
-                  {this.state.property.propertyCategory}
-                </Card>
-              </Card>
-            </Col>
-            <Col span={4}>
-              <Card
-                style={{ marginBottom: 10, marginLeft: 10 }}
-                title="Features"
-              >
-                <List
-                  itemLayout="horizontal"
-                  dataSource={features}
-                  renderItem={(feature) => (
-                    <List.Item>
-                      <List.Item.Meta
-                        avatar={<HomeOutlined />}
-                        title={feature}
-                      />
-                    </List.Item>
-                  )}
-                ></List>
+    return (
+      <>
+        <Row>
+          <Col span={18} lg={{span:24}} xl={{span:18}} md={{span: 24}} sm={{span: 24}} xs={{span: 24}}>
+            <Card
+              title={this.state.property.title}
+              extra={
+                <Space>
+                  {this.state.property.highPriority ? (
+                    <Badge dot text="High Priority" status="success" />
+                  ) : null}
+                  {this.state.property.underOffer ? (
+                    <Badge dot text="Under Offer" status="processing" />
+                  ) : null}
+                </Space>
+              }
+            >
+              <Card type="inner" style={{ marginBottom: 10 }} title="Title">
+                {this.state.property.title}
               </Card>
               <Card
-                style={{ marginBottom: 10, marginLeft: 10 }}
-                title="Message Agent"
+                type="inner"
+                style={{ marginBottom: 10 }}
+                title="Description"
               >
-                <Form
-                  name="message"
-                  onFinish={this.sendMessage}
-                  scrollToFirstError
-                >
-                  <Form.Item name="messageContent">
-                    <Input.TextArea placeholder="Write your message here..." />
-                  </Form.Item>
-                  <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                      Send Message
-                    </Button>
-                  </Form.Item>
-                </Form>
+                {this.state.property.description}
               </Card>
-            </Col>
-          </Row>
-        </>
-      );
-    }
-
-    if (this.props.update) {
-      return <Card></Card>;
-    }
-
-    if (this.props.create) {
-      return <Card></Card>;
-    }
+              <Card type="inner" style={{ marginBottom: 10 }} title="Location">
+                {this.state.property.location}
+              </Card>
+              <Card
+                type="inner"
+                style={{ marginBottom: 10 }}
+                title="Asking Price"
+              >
+                £{this.state.property.askingPrice}
+              </Card>
+              <Card type="inner" style={{ marginBottom: 10 }} title="Agent">
+                {this.state.property.user}
+              </Card>
+              <Card type="inner" style={{ marginBottom: 10 }} title="Category">
+                {this.state.property.propertyCategory}
+              </Card>
+            </Card>
+          </Col>
+          <Col span={6} lg={{span:24}} xl={{span:6}} md={{span: 24}} sm={{span: 24}} xs={{span: 24}}>
+            <Card title="Features">
+              <List
+                itemLayout="horizontal"
+                dataSource={features}
+                renderItem={(feature) => (
+                  <List.Item>
+                    <List.Item.Meta avatar={<HomeOutlined />} title={feature} />
+                  </List.Item>
+                )}
+              ></List>
+            </Card>
+            <Card
+              title="Message Agent"
+            >
+              {this.state.messageSentSuccessfully ? <Result
+          status="success"
+          title="Message sent successfully!"
+          subTitle="The agent will contact you shortly."
+          extra={[<StyledSpin />]}
+        /> : null}
+        {this.state.sendingMessage ? <StyledSpin size="small" />
+              : null
+              }
+        {this.state.showMessageForm ? 
+        <Form
+        name="message"
+        onFinish={this.sendMessage}
+        scrollToFirstError
+      >
+      <Card type="inner" title="Your E-mail">
+        <Form.Item name="inquirerEmail">
+          <Input placeholder="Your e-mail address" />
+        </Form.Item>
+      </Card>
+      <Card type="inner" title="Message">
+        <Form.Item name="text">
+          <Input.TextArea placeholder="Write your message here..." />
+        </Form.Item>
+        </Card>
+        <Form.Item>
+          <Button type="primary" htmlType="submit" block>
+            Send Message
+          </Button>
+        </Form.Item>
+      </Form>
+        : null
+        }
+              
+            </Card>
+          </Col>
+        </Row>
+      </>
+    );
   }
 }
 

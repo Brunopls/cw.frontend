@@ -9,7 +9,12 @@ class PropertyCard extends React.Component {
     return (
       <Card
         hoverable
-        cover={<Image style={{borderRadius:25, padding: 15}} src="https://picsum.photos/1204/720" />}
+        cover={
+          <Image
+            style={{ borderRadius: 25, padding: 15 }}
+            src="https://picsum.photos/1204/720"
+          />
+        }
         title={this.props.title}
         key={this.props._id}
         actions={[

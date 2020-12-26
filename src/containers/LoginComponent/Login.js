@@ -1,10 +1,11 @@
 import React from "react";
-import { Form, Input, Button, Result, Spin } from "antd";
+import { Form, Input, Button, Result, Spin, message } from "antd";
 import { status, json } from "../../core/utilities/requestHandlers";
 import config from "../../core/config.json";
 
 import { emailRules, passwordRules } from "./LoginRules";
 import { formItemLayout, tailFormItemLayout, centeredDiv } from "./LoginStyles";
+import { Redirect } from "react-router-dom";
 
 import UserContext from "../../core/contexts/user";
 
@@ -15,17 +16,16 @@ class LoginForm extends React.Component {
       successful: false,
       failed: false,
       loading: false,
+      redirect: false,
     };
     this.onFinish = this.onFinish.bind(this);
   }
-
-  state = { redirect: null };
 
   static contextType = UserContext;
 
   onFinish = (values) => {
     this.setState({ loading: true });
-    const { ...data } = values; // ignore the 'confirm' value in data sent
+    const { ...data } = values; 
     fetch(`${config.BACK_END_URL}/api/users/login`, {
       method: "POST",
       headers: {
@@ -44,6 +44,23 @@ class LoginForm extends React.Component {
       });
   };
 
+  componentDidMount(){
+    if(this.props.location.state){
+      if(this.props.location.state.unauthorisedAccess){
+        message.error('You have to be logged in to access that feature.')
+      }
+    }
+  }
+
+  componentDidUpdate(){
+    if(this.state.successful) 
+      this.redir = setTimeout(() => this.setState({ successful: false, redirect: true}), 1000)
+  }
+
+  componentWillUnmount(){
+      clearTimeout(this.redir)
+  }
+
   render() {
     if (this.state.loading) {
       return (
@@ -57,9 +74,16 @@ class LoginForm extends React.Component {
         <Result
           status="success"
           title="Successfully logged in!"
-          subTitle="Welcome."
+          subTitle="We're redirecting you to the Home page..."
+          extra={[<div style={centeredDiv}>
+            <Spin />
+          </div>]}
         />
       );
+    }
+
+    if (this.state.redirect) {
+      return <Redirect to="/" />
     }
 
     if (this.state.failed) {

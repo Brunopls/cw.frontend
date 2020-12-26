@@ -12,15 +12,25 @@ import {
   Button,
   Select,
   Pagination,
+  Space,
 } from "antd";
+import { Link } from "react-router-dom";
 
 import PropertyList from "../PropertyListComponent/PropertyList";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
 import { formItemLayout } from "./SearchFormStyles";
 
+import UserContext from "../../core/contexts/user";
+
 const { Option } = Select;
 
+const tailLayout = {
+  wrapperCol: { offset: 8, span: 16 },
+};
+
 class Home extends React.Component {
+  static contextType = UserContext;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -38,6 +48,8 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
+    const user = this.context;
+    console.log(user);
     this.loadProperties();
   }
 
@@ -101,21 +113,15 @@ class Home extends React.Component {
       <>
         <Row>
           <Divider>Properties</Divider>
-          <Col span={18}>
+          <Col span={24} xl={{span: 18}}>
             {this.state.loading ? (
               <StyledSpin />
             ) : (
               <PropertyList properties={this.state.properties} />
             )}
-            <Pagination
-              defaultCurrent={1}
-              pageSize={this.state.limit}
-              total={this.state.count}
-              onChange={this.onChangePage}
-            />
-            {/* <Pagination defaultCurrent={1} total={20} onChange={(pageNumber)=>this.setState({page: pageNumber})} /> */}
+            
           </Col>
-          <Col span={6}>
+          <Col xl={{span: 6}} lg={{span: 24}} md={{span: 24}} sm={{span: 24}} xs={{span: 24}}>
             <Card style={{ marginLeft: 10 }} title="Search Parameters">
               <Form
                 name="search"
@@ -145,14 +151,38 @@ class Home extends React.Component {
                     placeholder="Limit"
                   />
                 </Form.Item>
-                <Form.Item>
-                  <Button type="primary" htmlType="submit">
-                    Search
-                  </Button>
+                <Form.Item
+                  {...tailLayout}
+                  style={{ float: "left", marginLeft: 0 }}
+                >
+                  <Space style={{ marginLeft: 0 }}>
+                    <Button type="primary" htmlType="submit">
+                      Search
+                    </Button>
+                    <UserContext.Consumer>
+                      {(user) => {
+                        if (user.user.loggedIn) {
+                          return (
+                            <Button>
+                              <Link to="/property/create">
+                                Add New Property
+                              </Link>
+                            </Button>
+                          );
+                        }
+                      }}
+                    </UserContext.Consumer>
+                  </Space>
                 </Form.Item>
               </Form>
             </Card>
           </Col>
+          <Pagination
+              defaultCurrent={1}
+              pageSize={this.state.limit}
+              total={this.state.count}
+              onChange={this.onChangePage}
+            />
         </Row>
       </>
     );

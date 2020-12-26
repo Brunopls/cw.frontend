@@ -31,7 +31,7 @@ class RegisterForm extends React.Component {
   onFinish = (values) => {
     this.setState({ loading: true });
     const { confirm, ...data } = values; // ignore the 'confirm' value in data sent
-    fetch(`${config.BACK_END_URL}/api/users/`, {
+    fetch(`${config.BACK_END_URL}/api/properties/`, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {

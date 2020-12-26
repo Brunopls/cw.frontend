@@ -18,7 +18,7 @@ class PropertyList extends React.Component {
     return (
       <>
         <List
-          grid={{ gutter: 24, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3 }}
+          grid={{ gutter: 24, xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 3 }}
           dataSource={this.props.properties}
           renderItem={(property) => (
             <List.Item>

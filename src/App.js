@@ -1,14 +1,15 @@
 import React from "react";
 import "antd/dist/antd.css";
-import { Layout } from "antd";
+import { Layout, message} from "antd";
 import "./App.css";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
-import NavBar from "./components/NavBarComponent/NavBar";
+import Nav from "./components/NavBarComponent/NavBar";
 import Register from "./containers/RegisterComponent/Register";
 import Login from "./containers/LoginComponent/Login";
 import Home from "./containers/HomeComponent/Home";
 import Property from "./containers/PropertyComponent/Property";
+import PropertyCreate from "./containers/PropertyCreateComponent/PropertyCreate";
 
 import UserContext from "./core/contexts/user";
 const { Header, Footer, Content } = Layout;
@@ -34,6 +35,7 @@ class App extends React.Component {
   }
 
   logout() {
+    message.info('Logged out.');
     console.log("Removing user from the app context");
     this.setState({ user: { loggedIn: false } });
   }
@@ -50,18 +52,22 @@ class App extends React.Component {
         <UserContext.Provider value={context}>
           <Router>
             <Header>
-              <NavBar />
+              <Nav />
             </Header>
 
             <Content style={contentStyles}>
               <Switch>
-                <Route path="/register" children={<Register />} />
-                <Route path="/login" children={<Login />} />
+                <Route path="/register" render={(props) => <Register {...props} />} />
+                <Route path="/login" render={(props) => <Login {...props} />} />
                 <Route
-                  path="/property/view/:id"
-                  children={(props) => <Property read {...props} />}
+                  path="/property/view/:id" 
+                  render={(props) => <Property {...props} />}
                 />
-                <Route path="/" children={<Home />} />
+                <Route
+                  path="/property/create"
+                  render={context.user.loggedIn ? (props) => <PropertyCreate user={this.state.user} {...props} /> : (props) => <Redirect location={props.location} to={{pathname:"/login",state:{unauthorisedAccess: true}}} />}
+                />
+                <Route path="/" render={(props) => <Home {...props} />} />
               </Switch>
             </Content>
 
