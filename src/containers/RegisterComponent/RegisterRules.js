@@ -5,7 +5,7 @@ exports.emailRules = [
 ];
 
 exports.passwordRules = [
-  { required: true, min: 6,  message: "Please input your password!" },
+  { required: true, min: 6, message: "Please input your password!" },
 ];
 
 exports.signUpCodeRules = [
