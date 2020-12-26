@@ -1,8 +1,13 @@
 import React from "react";
 import "antd/dist/antd.css";
-import { Layout, message} from "antd";
+import { Layout, message } from "antd";
 import "./App.css";
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 
 import Nav from "./components/NavBarComponent/NavBar";
 import Register from "./containers/RegisterComponent/Register";
@@ -35,7 +40,7 @@ class App extends React.Component {
   }
 
   logout() {
-    message.info('Logged out.');
+    message.info("Logged out.");
     console.log("Removing user from the app context");
     this.setState({ user: { loggedIn: false } });
   }
@@ -57,15 +62,32 @@ class App extends React.Component {
 
             <Content style={contentStyles}>
               <Switch>
-                <Route path="/register" render={(props) => <Register {...props} />} />
+                <Route
+                  path="/register"
+                  render={(props) => <Register {...props} />}
+                />
                 <Route path="/login" render={(props) => <Login {...props} />} />
                 <Route
-                  path="/property/view/:id" 
+                  path="/property/view/:id"
                   render={(props) => <Property {...props} />}
                 />
                 <Route
                   path="/property/create"
-                  render={context.user.loggedIn ? (props) => <PropertyCreate user={this.state.user} {...props} /> : (props) => <Redirect location={props.location} to={{pathname:"/login",state:{unauthorisedAccess: true}}} />}
+                  render={
+                    context.user.loggedIn
+                      ? (props) => (
+                          <PropertyCreate user={this.state.user} {...props} />
+                        )
+                      : (props) => (
+                          <Redirect
+                            location={props.location}
+                            to={{
+                              pathname: "/login",
+                              state: { unauthorisedAccess: true },
+                            }}
+                          />
+                        )
+                  }
                 />
                 <Route path="/" render={(props) => <Home {...props} />} />
               </Switch>

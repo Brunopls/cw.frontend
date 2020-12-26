@@ -1,7 +1,17 @@
 import React from "react";
 import { status, json } from "../../core/utilities/requestHandlers";
 import config from "../../core/config.json";
-import { Form, Input, Button, Result, Card, Select, Row, Col, Switch } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Result,
+  Card,
+  Select,
+  Row,
+  Col,
+  Switch,
+} from "antd";
 import { Redirect } from "react-router-dom";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
 import "./PropertyCreate.css";
@@ -52,7 +62,7 @@ class Property extends React.Component {
       .then(status)
       .then(json)
       .then((response) => {
-        console.dir(response)
+        console.dir(response);
         this.setState({
           categories: response,
           loading: false,
@@ -63,24 +73,33 @@ class Property extends React.Component {
       });
   }
 
-  componentDidUpdate(){
-    if(this.state.successful) 
-      this.redir = setTimeout(() => this.setState({ successful: false, redirect: true}), 1000)
+  componentDidUpdate() {
+    if (this.state.successful)
+      this.redir = setTimeout(
+        () => this.setState({ successful: false, redirect: true }),
+        1000
+      );
   }
 
-  componentWillUnmount(){
-      clearTimeout(this.redir)
+  componentWillUnmount() {
+    clearTimeout(this.redir);
   }
 
   onFinish = (values) => {
     this.setState({ loading: true });
     let { ...data } = values;
-    data = {...data, user: this.props.user.id, askingPrice: parseInt(data.askingPrice), dateCreated: Date.now(), dateUpdated: Date.now()}
+    data = {
+      ...data,
+      user: this.props.user.id,
+      askingPrice: parseInt(data.askingPrice),
+      dateCreated: Date.now(),
+      dateUpdated: Date.now(),
+    };
     fetch(`${config.BACK_END_URL}/api/properties/`, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
-        "Authorization": `Bearer ${this.props.user.token}`,
+        Authorization: `Bearer ${this.props.user.token}`,
         "Content-Type": "application/json",
       },
     })
@@ -110,7 +129,9 @@ class Property extends React.Component {
     if (this.state.categories) {
       this.state.categories.map((category) => {
         return categories.push(
-          <Option key={category._id} value={category._id}>{category.title}</Option>
+          <Option key={category._id} value={category._id}>
+            {category.title}
+          </Option>
         );
       });
     }
@@ -129,9 +150,9 @@ class Property extends React.Component {
         />
       );
     }
-    
+
     if (this.state.redirect) {
-      return <Redirect to="/" />
+      return <Redirect to="/" />;
     }
 
     if (this.state.failed) {
@@ -204,13 +225,9 @@ class Property extends React.Component {
                 </Form.Item>
               </Card>
               <Card id="sideCard" title="Options">
-                <Card
-                  type="inner"
-                  style={{ marginBottom: 10 }}
-                  title="Visible"
-                >
+                <Card type="inner" style={{ marginBottom: 10 }} title="Visible">
                   <Form.Item name="visible">
-                    <Switch defaultChecked={true}/>
+                    <Switch defaultChecked={true} />
                   </Form.Item>
                 </Card>
                 <Card
@@ -219,8 +236,8 @@ class Property extends React.Component {
                   title="High Priority"
                 >
                   <Form.Item name="highPriority">
-                  <Switch />
-                </Form.Item>
+                    <Switch />
+                  </Form.Item>
                 </Card>
                 <Card
                   type="inner"
@@ -228,8 +245,8 @@ class Property extends React.Component {
                   title="Under Offer"
                 >
                   <Form.Item name="underOffer">
-                  <Switch />
-                </Form.Item>
+                    <Switch />
+                  </Form.Item>
                 </Card>
               </Card>
               <Card id="sideCard">

@@ -36,11 +36,16 @@ class Home extends React.Component {
     this.state = {
       limit: 3,
       page: 1,
-      loading: false,
-      failed: false,
+      selectedFeatures: [],
+      selectedCategories: [],
+      query: "",
+
       properties: [],
       features: [],
       categories: [],
+
+      loading: false,
+      failed: false,
     };
     this.onFinish = this.onFinish.bind(this);
     this.onChangePage = this.onChangePage.bind(this);
@@ -55,8 +60,14 @@ class Home extends React.Component {
 
   loadProperties() {
     this.setState({ loading: true });
+    const query = this.state.query;
+    const selectedFeatures = this.state.selectedFeatures;
+    const selectedCategories = this.state.selectedCategories;
+    console.log(
+      JSON.stringify({ query, selectedFeatures, selectedCategories })
+    );
     fetch(
-      `${config.BACK_END_URL}/api/properties/?limit=${this.state.limit}&page=${this.state.page}`,
+      `${config.BACK_END_URL}/api/properties/?limit=${this.state.limit}&page=${this.state.page}&query=${this.state.query}&features=${this.state.selectedFeatures}&categories=${this.state.selectedCategories}`,
       {
         method: "GET",
       }
@@ -84,7 +95,13 @@ class Home extends React.Component {
 
   onFinish = (values) => {
     const { ...data } = values;
-    this.setState({ limit: data.limit, page: 1 });
+    this.setState({
+      limit: data.limit === undefined ? this.state.limit : data.limit,
+      query: data.query === undefined ? "" : data.query,
+      selectedFeatures: data.features === undefined ? "" : data.features,
+      selectedCategories: data.categories === undefined ? "" : data.categories,
+      page: 1,
+    });
     this.loadProperties();
   };
 
@@ -113,15 +130,20 @@ class Home extends React.Component {
       <>
         <Row>
           <Divider>Properties</Divider>
-          <Col span={24} xl={{span: 18}}>
+          <Col span={24} xl={{ span: 18 }}>
             {this.state.loading ? (
               <StyledSpin />
             ) : (
               <PropertyList properties={this.state.properties} />
             )}
-            
           </Col>
-          <Col xl={{span: 6}} lg={{span: 24}} md={{span: 24}} sm={{span: 24}} xs={{span: 24}}>
+          <Col
+            xl={{ span: 6 }}
+            lg={{ span: 24 }}
+            md={{ span: 24 }}
+            sm={{ span: 24 }}
+            xs={{ span: 24 }}
+          >
             <Card style={{ marginLeft: 10 }} title="Search Parameters">
               <Form
                 name="search"
@@ -129,7 +151,7 @@ class Home extends React.Component {
                 {...formItemLayout}
                 scrollToFirstError
               >
-                <Form.Item name="search" label="Search Terms">
+                <Form.Item name="query" label="Search Terms">
                   <Input placeholder="Search query" />
                 </Form.Item>
                 <Form.Item name="features" label="Features">
@@ -146,8 +168,8 @@ class Home extends React.Component {
                   <InputNumber
                     min={1}
                     max={50}
-                    defaultValue={10}
-                    initialValues={10}
+                    defaultValue={3}
+                    initialValues={3}
                     placeholder="Limit"
                   />
                 </Form.Item>
@@ -178,11 +200,11 @@ class Home extends React.Component {
             </Card>
           </Col>
           <Pagination
-              defaultCurrent={1}
-              pageSize={this.state.limit}
-              total={this.state.count}
-              onChange={this.onChangePage}
-            />
+            defaultCurrent={1}
+            pageSize={this.state.limit}
+            total={this.state.count}
+            onChange={this.onChangePage}
+          />
         </Row>
       </>
     );

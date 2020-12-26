@@ -25,7 +25,7 @@ class LoginForm extends React.Component {
 
   onFinish = (values) => {
     this.setState({ loading: true });
-    const { ...data } = values; 
+    const { ...data } = values;
     fetch(`${config.BACK_END_URL}/api/users/login`, {
       method: "POST",
       headers: {
@@ -44,21 +44,24 @@ class LoginForm extends React.Component {
       });
   };
 
-  componentDidMount(){
-    if(this.props.location.state){
-      if(this.props.location.state.unauthorisedAccess){
-        message.error('You have to be logged in to access that feature.')
+  componentDidMount() {
+    if (this.props.location.state) {
+      if (this.props.location.state.unauthorisedAccess) {
+        message.error("You have to be logged in to access that feature.");
       }
     }
   }
 
-  componentDidUpdate(){
-    if(this.state.successful) 
-      this.redir = setTimeout(() => this.setState({ successful: false, redirect: true}), 1000)
+  componentDidUpdate() {
+    if (this.state.successful)
+      this.redir = setTimeout(
+        () => this.setState({ successful: false, redirect: true }),
+        1000
+      );
   }
 
-  componentWillUnmount(){
-      clearTimeout(this.redir)
+  componentWillUnmount() {
+    clearTimeout(this.redir);
   }
 
   render() {
@@ -75,15 +78,17 @@ class LoginForm extends React.Component {
           status="success"
           title="Successfully logged in!"
           subTitle="We're redirecting you to the Home page..."
-          extra={[<div style={centeredDiv}>
-            <Spin />
-          </div>]}
+          extra={[
+            <div style={centeredDiv}>
+              <Spin />
+            </div>,
+          ]}
         />
       );
     }
 
     if (this.state.redirect) {
-      return <Redirect to="/" />
+      return <Redirect to="/" />;
     }
 
     if (this.state.failed) {

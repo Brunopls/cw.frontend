@@ -38,7 +38,7 @@ class PropertyCard extends React.Component {
         }
       >
         <Card type="inner">Location: {this.props.location}</Card>
-        <Card type="inner">Category: {this.props.propertyCategory}</Card>
+        <Card type="inner">Category: {this.props.propertyCategory.title}</Card>
         <Card type="inner">Price: £{this.props.askingPrice}</Card>
       </Card>
     );
