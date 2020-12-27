@@ -127,7 +127,7 @@ class App extends React.Component {
                         )
                   }
                 />
-                <Route path="/" render={(props) => <Home />} />
+                <Route path="/" render={(props) => <Home  ownProperties={false} {...props} />} />
               </Switch>
             </Content>
 

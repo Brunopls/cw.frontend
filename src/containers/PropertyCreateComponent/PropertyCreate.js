@@ -152,7 +152,7 @@ class Property extends React.Component {
     }
 
     if (this.state.redirect) {
-      return <Redirect to="/" />;
+      return <Redirect to="/properties/own" />;
     }
 
     if (this.state.failed) {

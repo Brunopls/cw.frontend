@@ -7,7 +7,7 @@ class MyProperties extends React.Component {
   }
 
   render() {
-    return <Home ownProperties user={this.props.user} />;
+    return <Home ownProperties={true} user={this.props.user} />;
   }
 }
 export default MyProperties;

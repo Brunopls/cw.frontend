@@ -13,6 +13,7 @@ import {
   Select,
   Pagination,
   Space,
+  message
 } from "antd";
 import { Link } from "react-router-dom";
 
@@ -51,12 +52,15 @@ class Home extends React.Component {
     this.onFinish = this.onFinish.bind(this);
     this.onChangePage = this.onChangePage.bind(this);
     this.loadProperties = this.loadProperties.bind(this);
+    this.reloadProperties = this.reloadProperties.bind(this);
   }
 
   componentDidMount() {
     this.loadProperties();
   }
 
+  //If a user is logged in, return own properties where visible can be both true or null
+  //Doing this so this code can be reused for both the Home and MyProperties pages.
   loadProperties() {
     this.setState({ loading: true });
     fetch(
@@ -65,7 +69,7 @@ class Home extends React.Component {
       }&query=${this.state.query}&features=${
         this.state.selectedFeatures
       }&categories=${this.state.selectedCategories}&user=${
-        this.props.user === undefined ? "" : this.props.user.id
+        this.props.user === undefined ? "" : this.props.user.id + "&onlyVisible=false"
       }`,
       {
         method: "GET",
@@ -90,6 +94,11 @@ class Home extends React.Component {
   async onChangePage(pageNumber) {
     await this.setState({ page: pageNumber });
     this.loadProperties();
+  }
+
+  reloadProperties() {
+    this.loadProperties();
+    message.success("Property removed successfully!")
   }
 
   onFinish = (values) => {
@@ -136,9 +145,8 @@ class Home extends React.Component {
               <StyledSpin />
             ) : (
               <PropertyList
-                ownProperties={
-                  this.props.ownProperties !== undefined ? true : false
-                }
+                reloadProperties={this.reloadProperties}
+                ownProperties={this.props.ownProperties}
                 properties={this.state.properties}
               />
             )}
@@ -173,7 +181,7 @@ class Home extends React.Component {
                 <Form.Item name="limit" label="Result Limit">
                   <InputNumber
                     min={1}
-                    max={50}
+                    max={50 }
                     initialValues={3}
                     defaultValue={3}
                     placeholder="Limit"

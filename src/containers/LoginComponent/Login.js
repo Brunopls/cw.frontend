@@ -1,10 +1,10 @@
 import React from "react";
-import { Form, Input, Button, Result, Spin, message } from "antd";
+import { Form, Input, Button, Result, message } from "antd";
 import { status, json } from "../../core/utilities/requestHandlers";
 import config from "../../core/config.json";
 
 import { emailRules, passwordRules } from "./LoginRules";
-import { formItemLayout, tailFormItemLayout, centeredDiv } from "./LoginStyles";
+import { formItemLayout, tailFormItemLayout } from "./LoginStyles";
 import { Redirect } from "react-router-dom";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
 
