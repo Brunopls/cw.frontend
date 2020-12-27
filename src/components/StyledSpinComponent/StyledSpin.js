@@ -6,7 +6,7 @@ class StyledSpin extends React.Component {
   render() {
     return (
       <div style={centeredSpin}>
-        <Spin size="large" />
+        <Spin size={this.props.size} />
       </div>
     );
   }

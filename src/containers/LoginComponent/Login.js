@@ -1,11 +1,12 @@
 import React from "react";
-import { Form, Input, Button, Result, Spin, message } from "antd";
+import { Form, Input, Button, Result, message } from "antd";
 import { status, json } from "../../core/utilities/requestHandlers";
 import config from "../../core/config.json";
 
 import { emailRules, passwordRules } from "./LoginRules";
-import { formItemLayout, tailFormItemLayout, centeredDiv } from "./LoginStyles";
+import { formItemLayout, tailFormItemLayout } from "./LoginStyles";
 import { Redirect } from "react-router-dom";
+import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
 
 import UserContext from "../../core/contexts/user";
 
@@ -66,29 +67,22 @@ class LoginForm extends React.Component {
 
   render() {
     if (this.state.loading) {
-      return (
-        <div style={centeredDiv}>
-          <Spin size="large" />
-        </div>
-      );
+      return <StyledSpin />;
     }
+
     if (this.state.successful) {
       return (
         <Result
           status="success"
           title="Successfully logged in!"
           subTitle="We're redirecting you to the Home page..."
-          extra={[
-            <div style={centeredDiv}>
-              <Spin />
-            </div>,
-          ]}
+          extra={[<StyledSpin key={Math.random()} />]}
         />
       );
     }
 
     if (this.state.redirect) {
-      return <Redirect to="/" />;
+      return <Redirect to="/properties/own" />;
     }
 
     if (this.state.failed) {

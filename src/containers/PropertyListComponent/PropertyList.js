@@ -4,6 +4,9 @@ import { Result, List } from "antd";
 import PropertyCard from "../PropertyCardComponent/PropertyCard";
 
 class PropertyList extends React.Component {
+  constructor(props){
+    super(props);
+  }
   render() {
     if (!this.props.properties.length) {
       return (
@@ -22,7 +25,11 @@ class PropertyList extends React.Component {
           dataSource={this.props.properties}
           renderItem={(property) => (
             <List.Item>
-              <PropertyCard {...property} />
+              <PropertyCard
+                reloadProperties={this.props.reloadProperties}
+                ownProperties={this.props.ownProperties}
+                {...property}
+              />
             </List.Item>
           )}
         />

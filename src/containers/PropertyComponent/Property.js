@@ -47,7 +47,6 @@ class Property extends React.Component {
       .then(status)
       .then(json)
       .then((response) => {
-        console.dir(this.response);
         if (response._id) {
           this.setState({
             property: response,

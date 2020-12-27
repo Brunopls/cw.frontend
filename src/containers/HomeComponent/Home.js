@@ -13,6 +13,7 @@ import {
   Select,
   Pagination,
   Space,
+  message
 } from "antd";
 import { Link } from "react-router-dom";
 
@@ -34,6 +35,7 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: "",
       limit: 3,
       page: 1,
       selectedFeatures: [],
@@ -50,24 +52,25 @@ class Home extends React.Component {
     this.onFinish = this.onFinish.bind(this);
     this.onChangePage = this.onChangePage.bind(this);
     this.loadProperties = this.loadProperties.bind(this);
+    this.reloadProperties = this.reloadProperties.bind(this);
   }
 
   componentDidMount() {
-    const user = this.context;
-    console.log(user);
     this.loadProperties();
   }
 
+  //If a user is logged in, return own properties where visible can be both true or null
+  //Doing this so this code can be reused for both the Home and MyProperties pages.
   loadProperties() {
     this.setState({ loading: true });
-    const query = this.state.query;
-    const selectedFeatures = this.state.selectedFeatures;
-    const selectedCategories = this.state.selectedCategories;
-    console.log(
-      JSON.stringify({ query, selectedFeatures, selectedCategories })
-    );
     fetch(
-      `${config.BACK_END_URL}/api/properties/?limit=${this.state.limit}&page=${this.state.page}&query=${this.state.query}&features=${this.state.selectedFeatures}&categories=${this.state.selectedCategories}`,
+      `${config.BACK_END_URL}/api/properties/?limit=${this.state.limit}&page=${
+        this.state.page
+      }&query=${this.state.query}&features=${
+        this.state.selectedFeatures
+      }&categories=${this.state.selectedCategories}&user=${
+        this.props.user === undefined ? "" : this.props.user.id + "&onlyVisible=false"
+      }`,
       {
         method: "GET",
       }
@@ -91,6 +94,11 @@ class Home extends React.Component {
   async onChangePage(pageNumber) {
     await this.setState({ page: pageNumber });
     this.loadProperties();
+  }
+
+  reloadProperties() {
+    this.loadProperties();
+    message.success("Property removed successfully!")
   }
 
   onFinish = (values) => {
@@ -121,7 +129,9 @@ class Home extends React.Component {
     if (this.state.categories) {
       this.state.categories.map((category) => {
         return categories.push(
-          <Option value={category._id}>{category.title}</Option>
+          <Option key={category._id} value={category._id}>
+            {category.title}
+          </Option>
         );
       });
     }
@@ -134,7 +144,11 @@ class Home extends React.Component {
             {this.state.loading ? (
               <StyledSpin />
             ) : (
-              <PropertyList properties={this.state.properties} />
+              <PropertyList
+                reloadProperties={this.reloadProperties}
+                ownProperties={this.props.ownProperties}
+                properties={this.state.properties}
+              />
             )}
           </Col>
           <Col
@@ -167,9 +181,9 @@ class Home extends React.Component {
                 <Form.Item name="limit" label="Result Limit">
                   <InputNumber
                     min={1}
-                    max={50}
-                    defaultValue={3}
+                    max={50 }
                     initialValues={3}
+                    defaultValue={3}
                     placeholder="Limit"
                   />
                 </Form.Item>
