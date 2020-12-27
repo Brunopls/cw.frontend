@@ -22,7 +22,12 @@ class PropertyList extends React.Component {
           dataSource={this.props.properties}
           renderItem={(property) => (
             <List.Item>
-              <PropertyCard {...property} />
+              <PropertyCard
+                ownProperties={
+                  this.props.ownProperties !== undefined ? true : false
+                }
+                {...property}
+              />
             </List.Item>
           )}
         />

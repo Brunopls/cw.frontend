@@ -18,7 +18,7 @@ function Nav(props) {
           <Link to="/register">Register</Link>
         </Menu.Item>
         <Menu.Item key="3">
-          <Link to="/login">Login</Link>
+          <Link to="/login">Log In</Link>
         </Menu.Item>
       </>
     );
@@ -26,10 +26,10 @@ function Nav(props) {
     LoginNav = (
       <>
         <Menu.Item key="2">
-          <Link to="/account">Account</Link>
+          <Link to="/properties/own">My Properties</Link>
         </Menu.Item>
         <Menu.Item key="3" onClick={context.logout}>
-          <Link to="/">Logout</Link>
+          <Link to="/">Log Out</Link>
         </Menu.Item>
       </>
     );

@@ -15,6 +15,8 @@ import Login from "./containers/LoginComponent/Login";
 import Home from "./containers/HomeComponent/Home";
 import Property from "./containers/PropertyComponent/Property";
 import PropertyCreate from "./containers/PropertyCreateComponent/PropertyCreate";
+import PropertyUpdate from "./containers/PropertyUpdateComponent/PropertyUpdate";
+import MyProperties from "./containers/MyPropertiesComponent/MyProperties";
 
 import UserContext from "./core/contexts/user";
 const { Header, Footer, Content } = Layout;
@@ -89,7 +91,43 @@ class App extends React.Component {
                         )
                   }
                 />
-                <Route path="/" render={(props) => <Home {...props} />} />
+                <Route
+                  path="/properties/own"
+                  render={
+                    context.user.loggedIn
+                      ? (props) => (
+                          <MyProperties user={this.state.user} {...props} />
+                        )
+                      : (props) => (
+                          <Redirect
+                            location={props.location}
+                            to={{
+                              pathname: "/login",
+                              state: { unauthorisedAccess: true },
+                            }}
+                          />
+                        )
+                  }
+                />
+                <Route
+                  path="/properties/edit/:id"
+                  render={
+                    context.user.loggedIn
+                      ? (props) => (
+                          <PropertyUpdate user={this.state.user} {...props} />
+                        )
+                      : (props) => (
+                          <Redirect
+                            location={props.location}
+                            to={{
+                              pathname: "/login",
+                              state: { unauthorisedAccess: true },
+                            }}
+                          />
+                        )
+                  }
+                />
+                <Route path="/" render={(props) => <Home />} />
               </Switch>
             </Content>
 

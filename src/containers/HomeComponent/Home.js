@@ -34,6 +34,7 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: "",
       limit: 3,
       page: 1,
       selectedFeatures: [],
@@ -53,21 +54,19 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    const user = this.context;
-    console.log(user);
     this.loadProperties();
   }
 
   loadProperties() {
     this.setState({ loading: true });
-    const query = this.state.query;
-    const selectedFeatures = this.state.selectedFeatures;
-    const selectedCategories = this.state.selectedCategories;
-    console.log(
-      JSON.stringify({ query, selectedFeatures, selectedCategories })
-    );
     fetch(
-      `${config.BACK_END_URL}/api/properties/?limit=${this.state.limit}&page=${this.state.page}&query=${this.state.query}&features=${this.state.selectedFeatures}&categories=${this.state.selectedCategories}`,
+      `${config.BACK_END_URL}/api/properties/?limit=${this.state.limit}&page=${
+        this.state.page
+      }&query=${this.state.query}&features=${
+        this.state.selectedFeatures
+      }&categories=${this.state.selectedCategories}&user=${
+        this.props.user === undefined ? "" : this.props.user.id
+      }`,
       {
         method: "GET",
       }
@@ -121,7 +120,9 @@ class Home extends React.Component {
     if (this.state.categories) {
       this.state.categories.map((category) => {
         return categories.push(
-          <Option value={category._id}>{category.title}</Option>
+          <Option key={category._id} value={category._id}>
+            {category.title}
+          </Option>
         );
       });
     }
@@ -134,7 +135,12 @@ class Home extends React.Component {
             {this.state.loading ? (
               <StyledSpin />
             ) : (
-              <PropertyList properties={this.state.properties} />
+              <PropertyList
+                ownProperties={
+                  this.props.ownProperties !== undefined ? true : false
+                }
+                properties={this.state.properties}
+              />
             )}
           </Col>
           <Col
@@ -168,8 +174,8 @@ class Home extends React.Component {
                   <InputNumber
                     min={1}
                     max={50}
-                    defaultValue={3}
                     initialValues={3}
+                    defaultValue={3}
                     placeholder="Limit"
                   />
                 </Form.Item>
