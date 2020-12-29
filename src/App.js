@@ -1,25 +1,25 @@
-import React from 'react';
-import 'antd/dist/antd.css';
-import { Layout, message } from 'antd';
-import './App.css';
+import React from "react";
+import "antd/dist/antd.css";
+import { Layout, message } from "antd";
+import "./App.css";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
-} from 'react-router-dom';
+} from "react-router-dom";
 
-import Nav from './components/NavBarComponent/NavBar';
-import Register from './containers/RegisterComponent/Register';
-import Login from './containers/LoginComponent/Login';
-import Home from './containers/HomeComponent/Home';
-import Property from './containers/PropertyComponent/Property';
-import PropertyCreate from './containers/PropertyCreateComponent/PropertyCreate';
-import PropertyUpdate from './containers/PropertyUpdateComponent/PropertyUpdate';
-import MyProperties from './containers/MyPropertiesComponent/MyProperties';
-import Messages from './containers/MessagesComponent/Messages';
+import Nav from "./components/NavBarComponent/NavBar";
+import Register from "./containers/RegisterComponent/Register";
+import Login from "./containers/LoginComponent/Login";
+import Home from "./containers/HomeComponent/Home";
+import Property from "./containers/PropertyComponent/Property";
+import PropertyCreate from "./containers/PropertyCreateComponent/PropertyCreate";
+import PropertyUpdate from "./containers/PropertyUpdateComponent/PropertyUpdate";
+import MyProperties from "./containers/MyPropertiesComponent/MyProperties";
+import Messages from "./containers/MessagesComponent/Messages";
 
-import UserContext from './core/contexts/user';
+import UserContext from "./core/contexts/user";
 
 const { Header, Footer, Content } = Layout;
 
@@ -38,20 +38,20 @@ class App extends React.Component {
   }
 
   login(user) {
-    console.log('User is now being set on the context');
-    user.loggedIn = true;
-    this.setState({ user });
+    const userObject = user;
+    userObject.loggedIn = true;
+    this.setState({ user: userObject });
   }
 
   logout() {
-    message.info('Logged out.');
-    console.log('Removing user from the app context');
+    message.info("Logged out.");
     this.setState({ user: { loggedIn: false } });
   }
 
   render() {
+    const { user } = this.state;
     const context = {
-      user: this.state.user,
+      user,
       login: this.login,
       logout: this.logout,
     };
@@ -66,95 +66,86 @@ class App extends React.Component {
 
             <Content style={contentStyles}>
               <Switch>
-                <Route
-                  path="/register"
-                  render={(props) => <Register {...props} />}
-                />
-                <Route path="/login" render={(props) => <Login {...props} />} />
-                <Route
-                  path="/property/view/:id"
-                  render={(props) => <Property {...props} />}
-                />
+                <Route path="/register" render={<Register />} />
+                <Route path="/login" render={<Login />} />
+                <Route path="/property/view/:id" render={<Property />} />
                 <Route
                   path="/property/create"
                   render={
-                    context.user.loggedIn
-                      ? (props) => (
-                        <PropertyCreate user={this.state.user} {...props} />
-                      )
-                      : (props) => (
+                    context.user.loggedIn ? (
+                      <PropertyCreate user={context.user} />
+                    ) : (
+                      (props) => (
                         <Redirect
                           location={props.location}
                           to={{
-                            pathname: '/login',
+                            pathname: "/login",
                             state: { unauthorisedAccess: true },
                           }}
                         />
                       )
+                    )
                   }
                 />
                 <Route
                   path="/properties/own"
                   render={
-                    context.user.loggedIn
-                      ? (props) => (
-                        <MyProperties user={this.state.user} {...props} />
-                      )
-                      : (props) => (
+                    context.user.loggedIn ? (
+                      <MyProperties user={context.user} />
+                    ) : (
+                      (props) => (
                         <Redirect
                           location={props.location}
                           to={{
-                            pathname: '/login',
+                            pathname: "/login",
                             state: { unauthorisedAccess: true },
                           }}
                         />
                       )
+                    )
                   }
                 />
                 <Route
                   path="/properties/edit/:id"
                   render={
-                    context.user.loggedIn
-                      ? (props) => (
-                        <PropertyUpdate user={this.state.user} {...props} />
-                      )
-                      : (props) => (
+                    context.user.loggedIn ? (
+                      <PropertyUpdate user={context.user} />
+                    ) : (
+                      (props) => (
                         <Redirect
                           location={props.location}
                           to={{
-                            pathname: '/login',
+                            pathname: "/login",
                             state: { unauthorisedAccess: true },
                           }}
                         />
                       )
+                    )
                   }
                 />
                 <Route
                   path="/messages/"
                   render={
-                    context.user.loggedIn
-                      ? (props) => (
-                        <Messages user={this.state.user} {...props} />
-                      )
-                      : (props) => (
+                    context.user.loggedIn ? (
+                      <Messages user={context.user} />
+                    ) : (
+                      (props) => (
                         <Redirect
                           location={props.location}
                           to={{
-                            pathname: '/login',
+                            pathname: "/login",
                             state: { unauthorisedAccess: true },
                           }}
                         />
                       )
+                    )
                   }
                 />
-                <Route
-                  path="/"
-                  render={(props) => <Home ownProperties={false} {...props} />}
-                />
+                <Route path="/" render={<Home ownProperties={false} />} />
               </Switch>
             </Content>
 
-            <Footer style={{ textAlign: 'center' }}>Created for 304CEM</Footer>
+            <Footer style={{ textAlign: "center" }}>Created for 304CEM</Footer>
           </Router>
         </UserContext.Provider>
       </Layout>

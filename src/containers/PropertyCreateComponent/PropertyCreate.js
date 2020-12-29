@@ -1,6 +1,5 @@
 import React from "react";
-import { status, json } from "../../core/utilities/requestHandlers";
-import config from "../../core/config.json";
+import PropTypes from "prop-types";
 import {
   Form,
   Input,
@@ -13,6 +12,8 @@ import {
   Switch,
 } from "antd";
 import { Redirect } from "react-router-dom";
+import { status, json } from "../../core/utilities/requestHandlers";
+import config from "../../core/config.json";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
 import "./PropertyCreate.css";
 
@@ -22,8 +23,6 @@ class Property extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: 0,
-      property: {},
       loading: false,
     };
     this.loadFeatures = this.loadFeatures.bind(this);
@@ -34,6 +33,50 @@ class Property extends React.Component {
     this.loadFeatures();
     this.loadCategories();
   }
+
+  componentDidUpdate() {
+    const { successful } = this.state;
+    if (successful)
+      this.redir = setTimeout(
+        () => this.setState({ successful: false, redirect: true }),
+        1000
+      );
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.redir);
+  }
+
+  onFinish = (values) => {
+    this.setState({ loading: true });
+    const {
+      user: { id: userID, token },
+    } = this.props;
+    let { ...data } = values;
+    data = {
+      ...data,
+      user: userID,
+      askingPrice: parseInt(data.askingPrice, 10),
+      dateCreated: Date.now(),
+      dateUpdated: Date.now(),
+    };
+    fetch(`${config.BACK_END_URL}/api/properties/`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then(status)
+      .then(json)
+      .then(() => {
+        this.setState({ loading: false, successful: true });
+      })
+      .catch(() => {
+        this.setState({ loading: false, failed: true });
+      });
+  };
 
   loadFeatures() {
     this.setState({ loading: true });
@@ -49,7 +92,7 @@ class Property extends React.Component {
           redirect: false,
         });
       })
-      .catch((error) => {
+      .catch(() => {
         this.setState({ loading: false, failed: true });
       });
   }
@@ -62,85 +105,52 @@ class Property extends React.Component {
       .then(status)
       .then(json)
       .then((response) => {
-        console.dir(response);
         this.setState({
           categories: response,
           loading: false,
         });
       })
-      .catch((error) => {
+      .catch(() => {
         this.setState({ loading: false, failed: true });
       });
   }
-
-  componentDidUpdate() {
-    if (this.state.successful)
-      this.redir = setTimeout(
-        () => this.setState({ successful: false, redirect: true }),
-        1000
-      );
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.redir);
-  }
-
-  onFinish = (values) => {
-    this.setState({ loading: true });
-    let { ...data } = values;
-    data = {
-      ...data,
-      user: this.props.user.id,
-      askingPrice: parseInt(data.askingPrice),
-      dateCreated: Date.now(),
-      dateUpdated: Date.now(),
-    };
-    fetch(`${config.BACK_END_URL}/api/properties/`, {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        Authorization: `Bearer ${this.props.user.token}`,
-        "Content-Type": "application/json",
-      },
-    })
-      .then(status)
-      .then(json)
-      .then((response) => {
-        this.setState({ loading: false, successful: true });
-      })
-      .catch((err) => {
-        this.setState({ loading: false, failed: true });
-      });
-  };
 
   render() {
-    let features = [];
-    if (this.state.features) {
-      this.state.features.map((feature) => {
-        return features.push(
-          <Option key={feature._id} value={feature._id}>
-            {feature.title}
+    const {
+      features,
+      categories,
+      loading,
+      successful,
+      redirect,
+      failed,
+    } = this.state;
+    const featureOptions = [];
+    if (features) {
+      features.map(({ _id, title }) =>
+        featureOptions.push(
+          <Option key={_id} value={_id}>
+            {title}
           </Option>
-        );
-      });
+        )
+      );
     }
 
-    let categories = [];
-    if (this.state.categories) {
-      this.state.categories.map((category) => {
-        return categories.push(
-          <Option key={category._id} value={category._id}>
-            {category.title}
+    const categoryOptions = [];
+    if (categories) {
+      categories.map(({ _id, title }) =>
+        categoryOptions.push(
+          <Option key={_id} value={_id}>
+            {title}
           </Option>
-        );
-      });
+        )
+      );
     }
 
-    if (this.state.loading) {
+    if (loading) {
       return <StyledSpin />;
     }
 
-    if (this.state.successful) {
+    if (successful) {
       return (
         <Result
           status="success"
@@ -151,11 +161,11 @@ class Property extends React.Component {
       );
     }
 
-    if (this.state.redirect) {
+    if (redirect) {
       return <Redirect to="/properties/own" />;
     }
 
-    if (this.state.failed) {
+    if (failed) {
       return (
         <Result
           status="error"
@@ -210,7 +220,7 @@ class Property extends React.Component {
                 >
                   <Form.Item name="propertyCategory">
                     <Select placeholder="Property Category">
-                      {categories}
+                      {categoryOptions}
                     </Select>
                   </Form.Item>
                 </Card>
@@ -220,14 +230,14 @@ class Property extends React.Component {
               <Card id="sideCard" title="Features">
                 <Form.Item name="propertyFeatures">
                   <Select mode="multiple" placeholder="Property features">
-                    {features}
+                    {featureOptions}
                   </Select>
                 </Form.Item>
               </Card>
               <Card id="sideCard" title="Options">
                 <Card type="inner" style={{ marginBottom: 10 }} title="Visible">
                   <Form.Item name="visible">
-                    <Switch defaultChecked={true} />
+                    <Switch defaultChecked />
                   </Form.Item>
                 </Card>
                 <Card
@@ -263,5 +273,12 @@ class Property extends React.Component {
     );
   }
 }
+
+Property.propTypes = {
+  user: {
+    id: PropTypes.string.isRequired,
+    token: PropTypes.string.isRequired,
+  },
+};
 
 export default Property;

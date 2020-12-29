@@ -1,14 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext } from "react";
+import { Menu } from "antd";
+import { Link } from "react-router-dom";
+import HomeFilled from "@ant-design/icons";
+import UserContext from "../../core/contexts/user";
 
-import { Menu } from 'antd';
-import { Link } from 'react-router-dom';
-import { HomeFilled } from '@ant-design/icons';
-import UserContext from '../../core/contexts/user';
-
-function Nav(props) {
+const Nav = () => {
   const context = useContext(UserContext);
-  const { loggedIn } = context.user;
-  console.log(context);
+  const { user } = context;
+  const { loggedIn } = user;
   let LoginNav;
   if (!loggedIn) {
     LoginNav = (
@@ -38,7 +37,7 @@ function Nav(props) {
   }
   return (
     <>
-      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
+      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
         <Menu.Item disabled key="0">
           <HomeFilled />
         </Menu.Item>
@@ -49,6 +48,6 @@ function Nav(props) {
       </Menu>
     </>
   );
-}
+};
 
 export default Nav;

@@ -1,8 +1,8 @@
 import React from "react";
-import { Form, Input, Button, Result, Spin } from "antd";
+import { Form, Input, Button, Result } from "antd";
+import { Link } from "react-router-dom";
 import { status, json } from "../../core/utilities/requestHandlers";
 import config from "../../core/config.json";
-import { Link } from "react-router-dom";
 
 import {
   emailRules,
@@ -11,11 +11,7 @@ import {
   usernameRules,
   signUpCodeRules,
 } from "./RegisterRules";
-import {
-  formItemLayout,
-  tailFormItemLayout,
-  centeredDiv,
-} from "./RegisterStyles";
+import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
 
 class RegisterForm extends React.Component {
   constructor(props) {
@@ -40,23 +36,20 @@ class RegisterForm extends React.Component {
     })
       .then(status)
       .then(json)
-      .then((response) => {
+      .then(() => {
         this.setState({ loading: false, successful: true });
       })
-      .catch((err) => {
+      .catch(() => {
         this.setState({ loading: false, failed: true });
       });
   };
 
   render() {
-    if (this.state.loading) {
-      return (
-        <div style={centeredDiv}>
-          <Spin size="large" />
-        </div>
-      );
+    const { loading, successful, failed } = this.state;
+    if (loading) {
+      return <StyledSpin />;
     }
-    if (this.state.successful) {
+    if (successful) {
       return (
         <Result
           status="success"
@@ -73,7 +66,7 @@ class RegisterForm extends React.Component {
       );
     }
 
-    if (this.state.failed) {
+    if (failed) {
       return (
         <Result
           status="error"
@@ -94,7 +87,8 @@ class RegisterForm extends React.Component {
     }
     return (
       <Form
-        {...formItemLayout}
+        labelCol={{ xs: { span: 24 }, sm: { span: 6 } }}
+        wrapperCol={{ xs: { span: 24 }, sm: { span: 12 } }}
         name="register"
         onFinish={this.onFinish}
         scrollToFirstError
@@ -134,7 +128,7 @@ class RegisterForm extends React.Component {
           <Input.Password />
         </Form.Item>
 
-        <Form.Item {...tailFormItemLayout}>
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
             Register
           </Button>
