@@ -1,6 +1,5 @@
 import React from "react";
-import { status, json } from "../../core/utilities/requestHandlers";
-import config from "../../core/config.json";
+import PropTypes from "prop-types";
 import {
   Form,
   Input,
@@ -13,14 +12,15 @@ import {
   Row,
   Col,
 } from "antd";
+import HomeOutlined from "@ant-design/icons";
+import { status, json } from "../../core/utilities/requestHandlers";
+import config from "../../core/config.json";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
-import { HomeOutlined } from "@ant-design/icons";
 
 class Property extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: 0,
       property: {
         propertyCategory: {},
         propertyFeatures: [],
@@ -33,63 +33,13 @@ class Property extends React.Component {
     this.loadProperty = this.loadProperty.bind(this);
   }
 
-  async componentDidMount() {
-    const { id } = this.props.match.params;
-    await this.setState({ id: id });
+  componentDidMount() {
     this.loadProperty();
   }
 
-  loadProperty() {
-    this.setState({ loading: true });
-    fetch(`${config.BACK_END_URL}/api/properties/get/${this.state.id}`, {
-      method: "GET",
-    })
-      .then(status)
-      .then(json)
-      .then((response) => {
-        if (response._id) {
-          this.setState({
-            property: response,
-            loading: false,
-          });
-        } else this.setState({ loading: false, failed: true });
-      })
-      .catch((error) => {
-        this.setState({ loading: false, failed: true });
-      });
-  }
-
-  sendMessage = (values) => {
-    let { ...data } = values;
-    data = {
-      ...data,
-      user: this.state.property.user._id,
-      property: this.state.property._id,
-    };
-    this.setState({ sendingMessage: true, showMessageForm: false });
-    fetch(`${config.BACK_END_URL}/api/properties/message`, {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(status)
-      .then(json)
-      .then((response) => {
-        this.setState({
-          sendingMessage: false,
-          showMessageForm: false,
-          messageSentSuccessfully: true,
-        });
-      })
-      .catch((error) => {
-        this.setState({ failureSendingMessage: true });
-      });
-  };
-
   componentDidUpdate() {
-    if (this.state.messageSentSuccessfully)
+    const { messageSentSuccessfully } = this.state;
+    if (messageSentSuccessfully)
       this.timeout = setTimeout(
         () =>
           this.setState({
@@ -104,18 +54,94 @@ class Property extends React.Component {
     clearTimeout(this.timeout);
   }
 
-  render() {
-    let features = [];
-    if (this.state.property.propertyFeatures) {
-      this.state.property.propertyFeatures.map((feature) => {
-        return features.push(feature);
+  sendMessage = (values) => {
+    let { ...data } = values;
+    const {
+      property: {
+        user: { _id: userID },
+        _id: propertyID,
+      },
+    } = this.state;
+    data = {
+      ...data,
+      user: userID,
+      property: propertyID,
+    };
+    this.setState({ sendingMessage: true, showMessageForm: false });
+    fetch(`${config.BACK_END_URL}/api/properties/message`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(status)
+      .then(json)
+      .then(() => {
+        this.setState({
+          sendingMessage: false,
+          showMessageForm: false,
+          messageSentSuccessfully: true,
+        });
+      })
+      .catch(() => {});
+  };
+
+  loadProperty() {
+    const {
+      match: {
+        params: { id },
+      },
+    } = this.props;
+    this.setState({ loading: true });
+    fetch(`${config.BACK_END_URL}/api/properties/get/${id}`, {
+      method: "GET",
+    })
+      .then(status)
+      .then(json)
+      .then((response) => {
+        const { _id } = response;
+        if (_id) {
+          this.setState({
+            property: response,
+            loading: false,
+          });
+        } else this.setState({ loading: false, failed: true });
+      })
+      .catch(() => {
+        this.setState({ loading: false, failed: true });
       });
+  }
+
+  render() {
+    const {
+      property: {
+        propertyFeatures,
+        title,
+        description,
+        highPriority,
+        underOffer,
+        askingPrice,
+        location,
+        user: { fullName = "John Doe" },
+        propertyCategory: { title: propertyCategoryTitle },
+      },
+      loading,
+      failed,
+      messageSentSuccessfully,
+      sendingMessage,
+      showMessageForm,
+    } = this.state;
+
+    const features = [];
+    if (propertyFeatures) {
+      propertyFeatures.map((feature) => features.push(feature));
     }
-    if (this.state.loading) {
+    if (loading) {
       return <StyledSpin />;
     }
 
-    if (this.state.failed) {
+    if (failed) {
       return (
         <Result
           status="warning"
@@ -137,45 +163,43 @@ class Property extends React.Component {
             xs={{ span: 24 }}
           >
             <Card
-              title={this.state.property.title}
+              title={title}
               extra={
                 <Space>
-                  {this.state.property.highPriority ? (
+                  {highPriority ? (
                     <Badge dot text="High Priority" status="success" />
                   ) : null}
-                  {this.state.property.underOffer ? (
+                  {underOffer ? (
                     <Badge dot text="Under Offer" status="processing" />
                   ) : null}
                 </Space>
               }
             >
               <Card type="inner" style={{ marginBottom: 10 }} title="Title">
-                {this.state.property.title}
+                {title}
               </Card>
               <Card
                 type="inner"
                 style={{ marginBottom: 10 }}
                 title="Description"
               >
-                {this.state.property.description}
+                {description}
               </Card>
               <Card type="inner" style={{ marginBottom: 10 }} title="Location">
-                {this.state.property.location}
+                {location}
               </Card>
               <Card
                 type="inner"
                 style={{ marginBottom: 10 }}
                 title="Asking Price"
               >
-                £{this.state.property.askingPrice}
+                £{askingPrice}
               </Card>
               <Card type="inner" style={{ marginBottom: 10 }} title="Agent">
-                {this.state.property.user
-                  ? this.state.property.user.fullName
-                  : "Couldn't retrieve agent"}
+                {fullName}
               </Card>
               <Card type="inner" style={{ marginBottom: 10 }} title="Category">
-                {this.state.property.propertyCategory.title}
+                {propertyCategoryTitle}
               </Card>
             </Card>
           </Col>
@@ -199,10 +223,10 @@ class Property extends React.Component {
                     />
                   </List.Item>
                 )}
-              ></List>
+              />
             </Card>
             <Card title="Message Agent">
-              {this.state.messageSentSuccessfully ? (
+              {messageSentSuccessfully ? (
                 <Result
                   status="success"
                   title="Message sent successfully!"
@@ -210,8 +234,8 @@ class Property extends React.Component {
                   extra={[<StyledSpin />]}
                 />
               ) : null}
-              {this.state.sendingMessage ? <StyledSpin size="small" /> : null}
-              {this.state.showMessageForm ? (
+              {sendingMessage ? <StyledSpin size="small" /> : null}
+              {showMessageForm ? (
                 <Form
                   name="message"
                   onFinish={this.sendMessage}
@@ -241,5 +265,13 @@ class Property extends React.Component {
     );
   }
 }
+
+Property.propTypes = {
+  match: {
+    params: {
+      id: PropTypes.string.isRequired,
+    },
+  },
+};
 
 export default Property;

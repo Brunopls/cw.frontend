@@ -1,6 +1,5 @@
 import React from "react";
-import { status, json } from "../../core/utilities/requestHandlers";
-import config from "../../core/config.json";
+import PropTypes from "prop-types";
 import {
   Form,
   Input,
@@ -15,13 +14,22 @@ import {
   Switch,
 } from "antd";
 import { Redirect } from "react-router-dom";
+import { status, json } from "../../core/utilities/requestHandlers";
+import config from "../../core/config.json";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
+
 const { Option } = Select;
+
 class PropertyUpdate extends React.Component {
   constructor(props) {
     super(props);
+    const {
+      match: {
+        params: { id },
+      },
+    } = this.props;
     this.state = {
-      id: this.props.match.params.id,
+      id,
       successful: false,
       failed: false,
     };
@@ -36,8 +44,50 @@ class PropertyUpdate extends React.Component {
     this.loadCategories();
   }
 
+  componentDidUpdate() {
+    const { successful } = this.state;
+    if (successful)
+      this.redir = setTimeout(
+        () => this.setState({ successful: false, redirect: true }),
+        1000
+      );
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.redir);
+  }
+
+  onFinish = (values) => {
+    const { id } = this.state;
+    const {
+      user: { token },
+    } = this.props;
+    let { ...data } = values;
+    data = {
+      ...data,
+      askingPrice: parseInt(data.askingPrice, 10),
+      dateUpdated: Date.now(),
+    };
+    fetch(`${config.BACK_END_URL}/api/properties/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then(status)
+      .then(() => {
+        this.setState({ successful: true });
+      })
+      .catch(() => {
+        this.setState({ failed: true });
+      });
+  };
+
   loadProperty() {
-    fetch(`${config.BACK_END_URL}/api/properties/get/${this.state.id}`, {
+    const { id } = this.state;
+    fetch(`${config.BACK_END_URL}/api/properties/get/${id}`, {
       method: "GET",
     })
       .then(status)
@@ -49,7 +99,7 @@ class PropertyUpdate extends React.Component {
           });
         } else this.setState({ failed: true });
       })
-      .catch((error) => {
+      .catch(() => {
         this.setState({ failed: true });
       });
   }
@@ -66,7 +116,7 @@ class PropertyUpdate extends React.Component {
           redirect: false,
         });
       })
-      .catch((error) => {
+      .catch(() => {
         this.setState({ failed: true });
       });
   }
@@ -82,49 +132,33 @@ class PropertyUpdate extends React.Component {
           categories: response,
         });
       })
-      .catch((error) => {
+      .catch(() => {
         this.setState({ failed: true });
       });
-  }
-
-  onFinish = (values) => {
-    let { ...data } = values;
-    data = {
-      ...data,
-      askingPrice: parseInt(data.askingPrice),
-      dateUpdated: Date.now(),
-    };
-    fetch(`${config.BACK_END_URL}/api/properties/${this.state.id}`, {
-      method: "PUT",
-      body: JSON.stringify(data),
-      headers: {
-        Authorization: `Bearer ${this.props.user.token}`,
-        "Content-Type": "application/json",
-      },
-    })
-      .then(status)
-      .then(() => {
-        this.setState({ successful: true });
-      })
-      .catch((err) => {
-        this.setState({ failed: true });
-      });
-  };
-
-  componentDidUpdate() {
-    if (this.state.successful)
-      this.redir = setTimeout(
-        () => this.setState({ successful: false, redirect: true }),
-        1000
-      );
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.redir);
   }
 
   render() {
-    if (this.state.failed) {
+    const {
+      failed,
+      successful,
+      redirect,
+      property: {
+        title,
+        location,
+        underOffer,
+        highPriority,
+        askingPrice,
+        description,
+        visible,
+        propertyFeatures,
+        propertyCategory: { _id: propertyCategoryID },
+      },
+      property,
+      propertyCategory,
+      features,
+      categories,
+    } = this.state;
+    if (failed) {
       return (
         <Result
           status="error"
@@ -144,7 +178,7 @@ class PropertyUpdate extends React.Component {
       );
     }
 
-    if (this.state.successful) {
+    if (successful) {
       return (
         <Result
           status="success"
@@ -155,43 +189,41 @@ class PropertyUpdate extends React.Component {
       );
     }
 
-    if (this.state.redirect) {
+    if (redirect) {
       return <Redirect to="/properties/own" />;
     }
 
-    if (this.state.property) {
-      let features = [];
-      if (this.state.features) {
-        this.state.features.map((feature) => {
-          return features.push(
-            <Option key={feature._id} value={feature._id}>
-              {feature.title}
+    if (property) {
+      const featureOptions = [];
+      if (features) {
+        features.map(({ _id: featureID, title: featureTitle }) =>
+          featureOptions.push(
+            <Option key={featureID} value={featureID}>
+              {featureTitle}
             </Option>
-          );
-        });
+          )
+        );
       }
 
-      let selectedFeatures = [];
-      if (this.state.property.propertyFeatures) {
-        this.state.property.propertyFeatures.map((feature) => {
-          return selectedFeatures.push(feature._id);
-        });
+      const selectedFeatures = [];
+      if (propertyFeatures) {
+        propertyFeatures.map(({ _id }) => selectedFeatures.push(_id));
       }
 
-      let selectedCategory = [];
-      if (this.state.property.propertyCategory) {
-        selectedCategory.push(this.state.property.propertyCategory._id);
+      const selectedCategory = [];
+      if (propertyCategory) {
+        selectedCategory.push(propertyCategoryID);
       }
 
-      let categories = [];
-      if (this.state.categories) {
-        this.state.categories.map((category) => {
-          return categories.push(
-            <Option key={category._id} value={category._id}>
-              {category.title}
+      const categoryOptions = [];
+      if (categories) {
+        categories.map(({ _id: categoryID, title: categoryTitle }) =>
+          categoryOptions.push(
+            <Option key={categoryID} value={categoryID}>
+              {categoryTitle}
             </Option>
-          );
-        });
+          )
+        );
       }
 
       return (
@@ -207,24 +239,21 @@ class PropertyUpdate extends React.Component {
                 xs={{ span: 24 }}
               >
                 <Card
-                  title={this.state.property.title}
+                  title={title}
                   extra={
                     <Space>
-                      {this.state.property.highPriority ? (
+                      {highPriority ? (
                         <Badge dot text="High Priority" status="success" />
                       ) : null}
-                      {this.state.property.underOffer ? (
+                      {underOffer ? (
                         <Badge dot text="Under Offer" status="processing" />
                       ) : null}
                     </Space>
                   }
                 >
                   <Card type="inner" style={{ marginBottom: 10 }} title="Title">
-                    <Form.Item
-                      initialValue={this.state.property.title}
-                      name="title"
-                    >
-                      <Input defaultValue={this.state.property.title} />
+                    <Form.Item initialValue={title} name="title">
+                      <Input defaultValue={title} />
                     </Form.Item>
                   </Card>
                   <Card
@@ -232,11 +261,8 @@ class PropertyUpdate extends React.Component {
                     style={{ marginBottom: 10 }}
                     title="Description"
                   >
-                    <Form.Item
-                      initialValue={this.state.property.description}
-                      name="description"
-                    >
-                      <Input defaultValue={this.state.property.description} />
+                    <Form.Item initialValue={description} name="description">
+                      <Input defaultValue={description} />
                     </Form.Item>
                   </Card>
                   <Card
@@ -244,11 +270,8 @@ class PropertyUpdate extends React.Component {
                     style={{ marginBottom: 10 }}
                     title="Location"
                   >
-                    <Form.Item
-                      initialValue={this.state.property.location}
-                      name="location"
-                    >
-                      <Input defaultValue={this.state.property.location} />
+                    <Form.Item initialValue={location} name="location">
+                      <Input defaultValue={location} />
                     </Form.Item>
                   </Card>
                   <Card
@@ -256,11 +279,8 @@ class PropertyUpdate extends React.Component {
                     style={{ marginBottom: 10 }}
                     title="Asking Price"
                   >
-                    <Form.Item
-                      initialValue={this.state.property.askingPrice}
-                      name="askingPrice"
-                    >
-                      <Input defaultValue={this.state.property.askingPrice} />
+                    <Form.Item initialValue={askingPrice} name="askingPrice">
+                      <Input defaultValue={askingPrice} />
                     </Form.Item>
                   </Card>
                   <Card
@@ -276,7 +296,7 @@ class PropertyUpdate extends React.Component {
                         placeholder="Property Category"
                         defaultValue={selectedCategory}
                       >
-                        {categories}
+                        {categoryOptions}
                       </Select>
                     </Form.Item>
                   </Card>
@@ -300,7 +320,7 @@ class PropertyUpdate extends React.Component {
                       placeholder="Property features"
                       defaultValue={selectedFeatures}
                     >
-                      {features}
+                      {featureOptions}
                     </Select>
                   </Form.Item>
                 </Card>
@@ -310,11 +330,8 @@ class PropertyUpdate extends React.Component {
                     style={{ marginBottom: 10 }}
                     title="Visible"
                   >
-                    <Form.Item
-                      initialValue={this.state.property.visible}
-                      name="visible"
-                    >
-                      <Switch defaultChecked={this.state.property.visible} />
+                    <Form.Item initialValue={visible} name="visible">
+                      <Switch defaultChecked={visible} />
                     </Form.Item>
                   </Card>
                   <Card
@@ -322,13 +339,8 @@ class PropertyUpdate extends React.Component {
                     style={{ marginBottom: 10 }}
                     title="High Priority"
                   >
-                    <Form.Item
-                      initialValue={this.state.property.highPriority}
-                      name="highPriority"
-                    >
-                      <Switch
-                        defaultChecked={this.state.property.highPriority}
-                      />
+                    <Form.Item initialValue={highPriority} name="highPriority">
+                      <Switch defaultChecked={highPriority} />
                     </Form.Item>
                   </Card>
                   <Card
@@ -336,11 +348,8 @@ class PropertyUpdate extends React.Component {
                     style={{ marginBottom: 10 }}
                     title="Under Offer"
                   >
-                    <Form.Item
-                      initialValue={this.state.property.underOffer}
-                      name="underOffer"
-                    >
-                      <Switch defaultChecked={this.state.property.underOffer} />
+                    <Form.Item initialValue={underOffer} name="underOffer">
+                      <Switch defaultChecked={underOffer} />
                     </Form.Item>
                   </Card>
                 </Card>
@@ -361,5 +370,16 @@ class PropertyUpdate extends React.Component {
     return <StyledSpin />;
   }
 }
+
+PropertyUpdate.propTypes = {
+  match: {
+    params: {
+      id: PropTypes.string.isRequired,
+    },
+  },
+  user: {
+    token: PropTypes.string.isRequired,
+  },
+};
 
 export default PropertyUpdate;

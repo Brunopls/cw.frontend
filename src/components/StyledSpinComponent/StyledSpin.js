@@ -1,15 +1,20 @@
-import React from 'react';
-import { Spin } from 'antd';
-import { centeredSpin } from './StyledSpinStyles';
+import React from "react";
+import PropTypes from "prop-types";
+import { Spin } from "antd";
+import { centeredSpin } from "./StyledSpinStyles";
 
-class StyledSpin extends React.Component {
-  render() {
-    return (
-      <div style={centeredSpin}>
-        <Spin size={this.props.size} />
-      </div>
-    );
-  }
-}
+const StyledSpin = ({ size }) => (
+  <div style={centeredSpin}>
+    <Spin size={size} />
+  </div>
+);
+
+StyledSpin.propTypes = {
+  size: PropTypes.string,
+};
+
+StyledSpin.defaultProps = {
+  size: undefined,
+};
 
 export default StyledSpin;
