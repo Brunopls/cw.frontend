@@ -1,6 +1,5 @@
 import React from "react";
-import { status, json } from "../../core/utilities/requestHandlers";
-import config from "../../core/config.json";
+import PropTypes from "prop-types";
 import {
   Divider,
   Input,
@@ -16,26 +15,19 @@ import {
   message,
 } from "antd";
 import { Link } from "react-router-dom";
+import { status, json } from "../../core/utilities/requestHandlers";
+import config from "../../core/config.json";
 
 import PropertyList from "../PropertyListComponent/PropertyList";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
-import { formItemLayout } from "./SearchFormStyles";
-
 import UserContext from "../../core/contexts/user";
 
 const { Option } = Select;
 
-const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
-};
-
 class Home extends React.Component {
-  static contextType = UserContext;
-
   constructor(props) {
     super(props);
     this.state = {
-      user: "",
       limit: 3,
       page: 1,
       selectedFeatures: [],
@@ -47,7 +39,6 @@ class Home extends React.Component {
       categories: [],
 
       loading: false,
-      failed: false,
     };
     this.onFinish = this.onFinish.bind(this);
     this.onChangePage = this.onChangePage.bind(this);
@@ -59,19 +50,41 @@ class Home extends React.Component {
     this.loadProperties();
   }
 
-  //If a user is logged in, return own properties where visible can be both true or null
-  //Doing this so this code can be reused for both the Home and MyProperties pages.
+  async onChangePage(pageNumber) {
+    await this.setState({ page: pageNumber });
+    this.loadProperties();
+  }
+
+  onFinish(values) {
+    const { ...data } = values;
+    this.setState((prevState) => ({
+      limit: data.limit === undefined ? prevState.limit : data.limit,
+      query: data.query === undefined ? "" : data.query,
+      selectedFeatures: data.features === undefined ? "" : data.features,
+      selectedCategories: data.categories === undefined ? "" : data.categories,
+      page: 1,
+    }));
+    this.loadProperties();
+  }
+
+  // If a user is logged in, return own properties where visible can be both true or null
+  // Doing this so this code can be reused for both the Home and MyProperties pages.
   loadProperties() {
+    const {
+      limit,
+      page,
+      query,
+      selectedFeatures,
+      selectedCategories,
+    } = this.state;
+    const { user } = this.props;
+    const { id } = this.user;
     this.setState({ loading: true });
     fetch(
-      `${config.BACK_END_URL}/api/properties/?limit=${this.state.limit}&page=${
-        this.state.page
-      }&query=${this.state.query}&features=${
-        this.state.selectedFeatures
-      }&categories=${this.state.selectedCategories}&user=${
-        this.props.user === undefined
-          ? ""
-          : this.props.user.id + "&onlyVisible=false"
+      `${
+        config.BACK_END_URL
+      }/api/properties/?limit=${limit}&page=${page}&query=${query}&features=${selectedFeatures}&categories=${selectedCategories}&user=${
+        user === undefined ? "" : `${id}&onlyVisible=false`
       }`,
       {
         method: "GET",
@@ -87,15 +100,7 @@ class Home extends React.Component {
           count: response.resultCount,
           loading: false,
         });
-      })
-      .catch((error) => {
-        this.setState({ failed: true });
       });
-  }
-
-  async onChangePage(pageNumber) {
-    await this.setState({ page: pageNumber });
-    this.loadProperties();
   }
 
   reloadProperties() {
@@ -103,39 +108,32 @@ class Home extends React.Component {
     message.success("Property removed successfully!");
   }
 
-  onFinish = (values) => {
-    const { ...data } = values;
-    this.setState({
-      limit: data.limit === undefined ? this.state.limit : data.limit,
-      query: data.query === undefined ? "" : data.query,
-      selectedFeatures: data.features === undefined ? "" : data.features,
-      selectedCategories: data.categories === undefined ? "" : data.categories,
-      page: 1,
-    });
-    this.loadProperties();
-  };
-
   render() {
-    let features = [];
-    if (this.state.features) {
-      this.state.features.map((feature) => {
-        return features.push(
-          <Option key={feature._id} value={feature._id}>
-            {feature.title}
+    const { loading, properties, limit, count } = this.state;
+    const { ownProperties } = this.props;
+
+    const featureOptions = [];
+    const { features } = this.state;
+    if (features) {
+      features.map(({ _id, title }) =>
+        featureOptions.push(
+          <Option key={_id} value={_id}>
+            {title}
           </Option>
-        );
-      });
+        )
+      );
     }
 
-    let categories = [];
-    if (this.state.categories) {
-      this.state.categories.map((category) => {
-        return categories.push(
-          <Option key={category._id} value={category._id}>
-            {category.title}
+    const categoryOptions = [];
+    const { categories } = this.state;
+    if (categories) {
+      categories.map(({ _id, title }) =>
+        categoryOptions.push(
+          <Option key={_id} value={_id}>
+            {title}
           </Option>
-        );
-      });
+        )
+      );
     }
 
     return (
@@ -143,13 +141,13 @@ class Home extends React.Component {
         <Row>
           <Divider>Properties</Divider>
           <Col span={24} xl={{ span: 18 }}>
-            {this.state.loading ? (
+            {loading ? (
               <StyledSpin />
             ) : (
               <PropertyList
                 reloadProperties={this.reloadProperties}
-                ownProperties={this.props.ownProperties}
-                properties={this.state.properties}
+                ownProperties={ownProperties}
+                properties={properties}
               />
             )}
           </Col>
@@ -164,7 +162,8 @@ class Home extends React.Component {
               <Form
                 name="search"
                 onFinish={this.onFinish}
-                {...formItemLayout}
+                labelCol={{ xs: { span: 24 }, sm: { span: 6 } }}
+                wrapperCol={{ xs: { span: 24 }, sm: { span: 12 } }}
                 scrollToFirstError
               >
                 <Form.Item name="query" label="Search Terms">
@@ -172,12 +171,12 @@ class Home extends React.Component {
                 </Form.Item>
                 <Form.Item name="features" label="Features">
                   <Select mode="multiple" placeholder="Property features">
-                    {features}
+                    {featureOptions}
                   </Select>
                 </Form.Item>
                 <Form.Item name="categories" label="Categories">
                   <Select mode="multiple" placeholder="Property categories">
-                    {categories}
+                    {categoryOptions}
                   </Select>
                 </Form.Item>
                 <Form.Item name="limit" label="Result Limit">
@@ -190,7 +189,7 @@ class Home extends React.Component {
                   />
                 </Form.Item>
                 <Form.Item
-                  {...tailLayout}
+                  wrapperCol={{ offset: 8, span: 16 }}
                   style={{ float: "left", marginLeft: 0 }}
                 >
                   <Space style={{ marginLeft: 0 }}>
@@ -198,8 +197,8 @@ class Home extends React.Component {
                       Search
                     </Button>
                     <UserContext.Consumer>
-                      {(user) => {
-                        if (user.user.loggedIn) {
+                      {({ user }) => {
+                        if (user.loggedIn) {
                           return (
                             <Button>
                               <Link to="/property/create">
@@ -208,6 +207,7 @@ class Home extends React.Component {
                             </Button>
                           );
                         }
+                        return null;
                       }}
                     </UserContext.Consumer>
                   </Space>
@@ -217,8 +217,8 @@ class Home extends React.Component {
           </Col>
           <Pagination
             defaultCurrent={1}
-            pageSize={this.state.limit}
-            total={this.state.count}
+            pageSize={limit}
+            total={count}
             onChange={this.onChangePage}
           />
         </Row>
@@ -226,4 +226,24 @@ class Home extends React.Component {
     );
   }
 }
+
+Home.contextType = UserContext;
+
+Home.propTypes = {
+  user: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      loggedIn: PropTypes.bool,
+    })
+  ),
+  ownProperties: PropTypes.bool.isRequired,
+};
+
+Home.defaultProps = {
+  user: {
+    id: undefined,
+    loggedIn: undefined,
+  },
+};
+
 export default Home;

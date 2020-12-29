@@ -1,11 +1,11 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Form, Input, Button, Result, message } from "antd";
+import { Redirect } from "react-router-dom";
 import { status, json } from "../../core/utilities/requestHandlers";
 import config from "../../core/config.json";
 
 import { emailRules, passwordRules } from "./LoginRules";
-import { formItemLayout, tailFormItemLayout } from "./LoginStyles";
-import { Redirect } from "react-router-dom";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
 
 import UserContext from "../../core/contexts/user";
@@ -22,39 +22,20 @@ class LoginForm extends React.Component {
     this.onFinish = this.onFinish.bind(this);
   }
 
-  static contextType = UserContext;
-
-  onFinish = (values) => {
-    this.setState({ loading: true });
-    const { ...data } = values;
-    fetch(`${config.BACK_END_URL}/api/users/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Basic " + btoa(data.email + ":" + data.password),
-      },
-    })
-      .then(status)
-      .then(json)
-      .then((data) => {
-        this.context.login(data);
-        this.setState({ loading: false, successful: true });
-      })
-      .catch((err) => {
-        this.setState({ loading: false, failed: true });
-      });
-  };
-
   componentDidMount() {
-    if (this.props.location.state) {
-      if (this.props.location.state.unauthorisedAccess) {
+    const { location } = this.props;
+    const { state } = location;
+    const { unauthorisedAccess } = state;
+    if (state) {
+      if (unauthorisedAccess) {
         message.error("You have to be logged in to access that feature.");
       }
     }
   }
 
   componentDidUpdate() {
-    if (this.state.successful)
+    const { successful } = this.state;
+    if (successful)
       this.redir = setTimeout(
         () => this.setState({ successful: false, redirect: true }),
         1000
@@ -65,12 +46,36 @@ class LoginForm extends React.Component {
     clearTimeout(this.redir);
   }
 
+  onFinish(values) {
+    const { login } = this.context;
+    this.setState({ loading: true });
+    const { ...data } = values;
+    fetch(`${config.BACK_END_URL}/api/users/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${btoa(`${data.email}:${data.password}`)}`,
+      },
+    })
+      .then(status)
+      .then(json)
+      .then((response) => {
+        login(response);
+        this.setState({ loading: false, successful: true });
+      })
+      .catch(() => {
+        this.setState({ loading: false, failed: true });
+      });
+  }
+
   render() {
-    if (this.state.loading) {
+    const { loading, successful, redirect, failed } = this.state;
+
+    if (loading) {
       return <StyledSpin />;
     }
 
-    if (this.state.successful) {
+    if (successful) {
       return (
         <Result
           status="success"
@@ -81,11 +86,11 @@ class LoginForm extends React.Component {
       );
     }
 
-    if (this.state.redirect) {
+    if (redirect) {
       return <Redirect to="/properties/own" />;
     }
 
-    if (this.state.failed) {
+    if (failed) {
       return (
         <Result
           status="error"
@@ -106,7 +111,8 @@ class LoginForm extends React.Component {
     }
     return (
       <Form
-        {...formItemLayout}
+        labelCol={{ xs: { span: 24 }, sm: { span: 6 } }}
+        wrapperCol={{ xs: { span: 24 }, sm: { span: 12 } }}
         name="login"
         onFinish={this.onFinish}
         scrollToFirstError
@@ -119,7 +125,12 @@ class LoginForm extends React.Component {
           <Input.Password />
         </Form.Item>
 
-        <Form.Item {...tailFormItemLayout}>
+        <Form.Item
+          wrapperCol={{
+            xs: { span: 24, offset: 0 },
+            sm: { span: 16, offset: 6 },
+          }}
+        >
           <Button type="primary" htmlType="submit">
             Log In
           </Button>
@@ -128,5 +139,23 @@ class LoginForm extends React.Component {
     );
   }
 }
+
+LoginForm.contextType = UserContext;
+
+LoginForm.propTypes = {
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      unauthorisedAccess: PropTypes.bool,
+    }),
+  }),
+};
+
+LoginForm.defaultProps = {
+  location: {
+    state: {
+      unauthorisedAccess: false,
+    },
+  },
+};
 
 export default LoginForm;

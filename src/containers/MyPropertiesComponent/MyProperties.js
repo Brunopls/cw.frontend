@@ -1,13 +1,30 @@
-import React from 'react';
-import Home from '../HomeComponent/Home';
+/* eslint-disable no-void */
+import React from "react";
+import PropTypes from "prop-types";
+import Home from "../HomeComponent/Home";
 
-class MyProperties extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+const MyProperties = ({ user }) => <Home ownProperties user={user} />;
 
-  render() {
-    return <Home ownProperties user={this.props.user} />;
-  }
-}
+MyProperties.propTypes = {
+  user: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      token: PropTypes.string.isRequired,
+      loggedIn: PropTypes.bool.isRequired,
+      login: PropTypes.func,
+      loggout: PropTypes.func,
+    })
+  ),
+};
+
+MyProperties.defaultProps = {
+  user: {
+    id: "",
+    token: "",
+    loggedIn: false,
+    login: undefined,
+    loggout: undefined,
+  },
+};
+
 export default MyProperties;

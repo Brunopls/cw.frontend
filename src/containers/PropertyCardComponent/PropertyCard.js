@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Card, Space, Badge, Button, Image, Modal } from "antd";
 import { Link } from "react-router-dom";
 import {
@@ -13,6 +14,7 @@ import { status } from "../../core/utilities/requestHandlers";
 import UserContext from "../../core/contexts/user";
 
 import { cardLayout } from "../../core/utilities/generalStyles";
+
 const { confirm } = Modal;
 
 class PropertyCard extends React.Component {
@@ -21,12 +23,10 @@ class PropertyCard extends React.Component {
     this.showDeleteConfirm = this.showDeleteConfirm.bind(this);
   }
 
-  static contextType = UserContext;
-
   showDeleteConfirm() {
-    const token = this.context.user.token;
-    const id = this.props._id;
-    const reload = this.props.reloadProperties;
+    const { user } = this.context;
+    const { token } = user;
+    const { _id, reloadProperties } = this.props;
     confirm({
       title: "Are you sure?",
       icon: <ExclamationCircleOutlined />,
@@ -38,7 +38,7 @@ class PropertyCard extends React.Component {
       closable: true,
       keyboard: true,
       onOk() {
-        fetch(`${config.BACK_END_URL}/api/properties/${id}`, {
+        fetch(`${config.BACK_END_URL}/api/properties/${_id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -46,19 +46,28 @@ class PropertyCard extends React.Component {
         })
           .then(status)
           .then(() => {
-            reload();
+            reloadProperties();
           })
-          .catch((err) => {
-            alert("failed");
-          });
+          .catch(() => {});
       },
       onCancel() {},
     });
   }
 
   render() {
-    const updateLink = "/properties/edit/" + this.props._id;
-    const viewLink = "/property/view/" + this.props._id;
+    const {
+      _id,
+      title,
+      highPriority,
+      underOffer,
+      location,
+      askingPrice,
+      propertyCategory,
+      ownProperties,
+    } = this.props;
+    const { title: propertyCategoryTitle } = propertyCategory;
+    const updateLink = `/properties/edit/${_id}`;
+    const viewLink = `/property/view/${_id}`;
 
     const loggedInActions = [
       <Button key="view">
@@ -84,6 +93,7 @@ class PropertyCard extends React.Component {
               </>
             );
           }
+          return null;
         }}
       </UserContext.Consumer>,
     ];
@@ -105,30 +115,55 @@ class PropertyCard extends React.Component {
             src="https://picsum.photos/1204/720"
           />
         }
-        title={this.props.title}
-        key={this.props._id}
-        actions={
-          this.props.ownProperties === true ? loggedInActions : homeActions
-        }
+        title={title}
+        key={_id}
+        actions={ownProperties === true ? loggedInActions : homeActions}
         extra={
           <>
             <Space>
-              {this.props.highPriority ? (
+              {highPriority ? (
                 <Badge dot text="High Priority" status="success" />
               ) : null}
-              {this.props.underOffer ? (
+              {underOffer ? (
                 <Badge dot text="Under Offer" status="processing" />
               ) : null}
             </Space>
           </>
         }
       >
-        <Card style={cardLayout} type="inner">Location: {this.props.location}</Card>
-        <Card style={cardLayout} type="inner">Category: {this.props.propertyCategory.title}</Card>
-        <Card style={cardLayout} type="inner">Price: £{this.props.askingPrice}</Card>
+        <Card style={cardLayout} type="inner">
+          Location: {location}
+        </Card>
+        <Card style={cardLayout} type="inner">
+          Category: {propertyCategoryTitle}
+        </Card>
+        <Card style={cardLayout} type="inner">
+          Price: £{askingPrice}
+        </Card>
       </Card>
     );
   }
 }
+
+PropertyCard.contextType = UserContext;
+
+PropertyCard.propTypes = {
+  _id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  highPriority: PropTypes.bool.isRequired,
+  underOffer: PropTypes.bool.isRequired,
+  location: PropTypes.string.isRequired,
+  askingPrice: PropTypes.number.isRequired,
+  propertyCategory: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+  }),
+  ownProperties: PropTypes.bool,
+  reloadProperties: PropTypes.func,
+};
+
+PropertyCard.defaultProps = {
+  ownProperties: false,
+  reloadProperties: undefined,
+};
 
 export default PropertyCard;
