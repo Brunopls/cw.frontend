@@ -1,12 +1,13 @@
-import React from "react";
-import { Result, List } from "antd";
+import React from 'react';
+import { Result, List } from 'antd';
 
-import PropertyCard from "../PropertyCardComponent/PropertyCard";
+import PropertyCard from '../PropertyCardComponent/PropertyCard';
 
 class PropertyList extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
   }
+
   render() {
     if (!this.props.properties.length) {
       return (
@@ -21,7 +22,9 @@ class PropertyList extends React.Component {
     return (
       <>
         <List
-          grid={{ gutter: 24, xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 3 }}
+          grid={{
+            gutter: 24, xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 3,
+          }}
           dataSource={this.props.properties}
           renderItem={(property) => (
             <List.Item>

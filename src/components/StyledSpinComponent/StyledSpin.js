@@ -1,6 +1,6 @@
-import React from "react";
-import { Spin } from "antd";
-import { centeredSpin } from "./StyledSpinStyles";
+import React from 'react';
+import { Spin } from 'antd';
+import { centeredSpin } from './StyledSpinStyles';
 
 class StyledSpin extends React.Component {
   render() {
