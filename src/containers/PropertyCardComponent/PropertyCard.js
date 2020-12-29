@@ -1,11 +1,18 @@
 import React from "react";
 import { Card, Space, Badge, Button, Image, Modal } from "antd";
 import { Link } from "react-router-dom";
-import { EyeOutlined, FormOutlined, DeleteOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import {
+  EyeOutlined,
+  FormOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 import config from "../../core/config.json";
 import { status } from "../../core/utilities/requestHandlers";
 
 import UserContext from "../../core/contexts/user";
+
+import { cardLayout } from "../../core/utilities/generalStyles";
 const { confirm } = Modal;
 
 class PropertyCard extends React.Component {
@@ -19,14 +26,14 @@ class PropertyCard extends React.Component {
   showDeleteConfirm() {
     const token = this.context.user.token;
     const id = this.props._id;
-    const reload = this.props.reloadProperties
+    const reload = this.props.reloadProperties;
     confirm({
-      title: 'Are you sure?',
+      title: "Are you sure?",
       icon: <ExclamationCircleOutlined />,
-      content: 'This action will permanently delete this property.',
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
+      content: "This action will permanently delete this property.",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
       centered: true,
       closable: true,
       keyboard: true,
@@ -39,7 +46,7 @@ class PropertyCard extends React.Component {
         })
           .then(status)
           .then(() => {
-            reload()
+            reload();
           })
           .catch((err) => {
             alert("failed");
@@ -59,7 +66,7 @@ class PropertyCard extends React.Component {
           <EyeOutlined key="view" />
         </Link>
       </Button>,
-      <UserContext.Consumer> 
+      <UserContext.Consumer>
         {(context) => {
           if (context.user.loggedIn) {
             return (
@@ -71,7 +78,7 @@ class PropertyCard extends React.Component {
                     </Link>
                   </Button>
                   <Button onClick={this.showDeleteConfirm}>
-                      <DeleteOutlined />
+                    <DeleteOutlined />
                   </Button>
                 </Space>
               </>
@@ -100,7 +107,9 @@ class PropertyCard extends React.Component {
         }
         title={this.props.title}
         key={this.props._id}
-        actions={this.props.ownProperties === true ? loggedInActions : homeActions}
+        actions={
+          this.props.ownProperties === true ? loggedInActions : homeActions
+        }
         extra={
           <>
             <Space>
@@ -114,9 +123,9 @@ class PropertyCard extends React.Component {
           </>
         }
       >
-        <Card type="inner">Location: {this.props.location}</Card>
-        <Card type="inner">Category: {this.props.propertyCategory.title}</Card>
-        <Card type="inner">Price: £{this.props.askingPrice}</Card>
+        <Card style={cardLayout} type="inner">Location: {this.props.location}</Card>
+        <Card style={cardLayout} type="inner">Category: {this.props.propertyCategory.title}</Card>
+        <Card style={cardLayout} type="inner">Price: £{this.props.askingPrice}</Card>
       </Card>
     );
   }

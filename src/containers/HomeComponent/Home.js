@@ -13,7 +13,7 @@ import {
   Select,
   Pagination,
   Space,
-  message
+  message,
 } from "antd";
 import { Link } from "react-router-dom";
 
@@ -69,7 +69,9 @@ class Home extends React.Component {
       }&query=${this.state.query}&features=${
         this.state.selectedFeatures
       }&categories=${this.state.selectedCategories}&user=${
-        this.props.user === undefined ? "" : this.props.user.id + "&onlyVisible=false"
+        this.props.user === undefined
+          ? ""
+          : this.props.user.id + "&onlyVisible=false"
       }`,
       {
         method: "GET",
@@ -98,7 +100,7 @@ class Home extends React.Component {
 
   reloadProperties() {
     this.loadProperties();
-    message.success("Property removed successfully!")
+    message.success("Property removed successfully!");
   }
 
   onFinish = (values) => {
@@ -181,7 +183,7 @@ class Home extends React.Component {
                 <Form.Item name="limit" label="Result Limit">
                   <InputNumber
                     min={1}
-                    max={50 }
+                    max={50}
                     initialValues={3}
                     defaultValue={3}
                     placeholder="Limit"

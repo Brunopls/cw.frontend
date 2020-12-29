@@ -1,5 +1,5 @@
-import React from "react";
-import Home from "../HomeComponent/Home";
+import React from 'react';
+import Home from '../HomeComponent/Home';
 
 class MyProperties extends React.Component {
   constructor(props) {
@@ -7,7 +7,7 @@ class MyProperties extends React.Component {
   }
 
   render() {
-    return <Home ownProperties={true} user={this.props.user} />;
+    return <Home ownProperties user={this.props.user} />;
   }
 }
 export default MyProperties;
