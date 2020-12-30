@@ -60,13 +60,13 @@ class Property extends React.Component {
     const {
       property: {
         user: { _id: userID },
-        _id: propertyID,
+        _id,
       },
     } = this.state;
     data = {
       ...data,
       user: userID,
-      property: propertyID,
+      property: _id,
     };
     this.setState({ sendingMessage: true, showMessageForm: false });
     fetch(`${config.BACK_END_URL}/api/properties/message`, {

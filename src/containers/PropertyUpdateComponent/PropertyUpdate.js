@@ -226,7 +226,6 @@ class PropertyUpdate extends React.Component {
       }
 
       let selectedCategory;
-      console.log(propertyCategory);
       if (propertyCategory) {
         const { _id } = propertyCategory;
         selectedCategory = _id;
