@@ -32,6 +32,7 @@ class PropertyUpdate extends React.Component {
       id,
       successful: false,
       failed: false,
+      loading: true,
     };
     this.loadProperty = this.loadProperty.bind(this);
     this.loadFeatures = this.loadFeatures.bind(this);
@@ -42,6 +43,7 @@ class PropertyUpdate extends React.Component {
     this.loadProperty();
     this.loadFeatures();
     this.loadCategories();
+    this.setState({ loading: false });
   }
 
   componentDidUpdate() {
@@ -138,26 +140,12 @@ class PropertyUpdate extends React.Component {
   }
 
   render() {
-    const {
-      failed,
-      successful,
-      redirect,
-      property: {
-        title,
-        location,
-        underOffer,
-        highPriority,
-        askingPrice,
-        description,
-        visible,
-        propertyFeatures,
-        propertyCategory: { _id: propertyCategoryID },
-      },
-      property,
-      propertyCategory,
-      features,
-      categories,
-    } = this.state;
+    const { failed, successful, redirect, loading } = this.state;
+
+    if (loading) {
+      return <StyledSpin />;
+    }
+
     if (failed) {
       return (
         <Result
@@ -192,8 +180,24 @@ class PropertyUpdate extends React.Component {
     if (redirect) {
       return <Redirect to="/properties/own" />;
     }
+    const { property } = this.state;
+    if (property !== undefined) {
+      const {
+        property: {
+          title,
+          location,
+          underOffer,
+          highPriority,
+          askingPrice,
+          description,
+          visible,
+          propertyFeatures,
+          propertyCategory,
+        },
+        features,
+        categories,
+      } = this.state;
 
-    if (property) {
       const featureOptions = [];
       if (features) {
         features.map(({ _id: featureID, title: featureTitle }) =>
@@ -210,11 +214,6 @@ class PropertyUpdate extends React.Component {
         propertyFeatures.map(({ _id }) => selectedFeatures.push(_id));
       }
 
-      const selectedCategory = [];
-      if (propertyCategory) {
-        selectedCategory.push(propertyCategoryID);
-      }
-
       const categoryOptions = [];
       if (categories) {
         categories.map(({ _id: categoryID, title: categoryTitle }) =>
@@ -224,6 +223,13 @@ class PropertyUpdate extends React.Component {
             </Option>
           )
         );
+      }
+
+      let selectedCategory;
+      console.log(propertyCategory);
+      if (propertyCategory) {
+        const { _id } = propertyCategory;
+        selectedCategory = _id;
       }
 
       return (

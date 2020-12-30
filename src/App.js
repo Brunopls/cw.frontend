@@ -21,6 +21,8 @@ import Messages from "./containers/MessagesComponent/Messages";
 
 import UserContext from "./core/contexts/user";
 
+import StyledSpin from "./components/StyledSpinComponent/StyledSpin";
+
 const { Header, Footer, Content } = Layout;
 
 const contentStyles = {
@@ -32,20 +34,33 @@ class App extends React.Component {
     super(props);
     this.state = {
       user: { loggedIn: false },
+      doneLoading: false,
     };
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
   }
 
+  componentDidMount() {
+    const authenticatedUser = JSON.parse(
+      localStorage.getItem("authenticatedUser")
+    );
+    let userObject;
+    if (authenticatedUser) userObject = authenticatedUser;
+    else userObject = { loggedIn: false };
+    this.setState({ user: userObject, doneLoading: true });
+  }
+
   login(user) {
     const userObject = user;
     userObject.loggedIn = true;
+    localStorage.setItem("authenticatedUser", JSON.stringify(userObject));
     this.setState({ user: userObject });
   }
 
   logout() {
-    message.info("Logged out.");
     this.setState({ user: { loggedIn: false } });
+    localStorage.removeItem("authenticatedUser");
+    message.warning("Successfully logged out!");
   }
 
   render() {
@@ -56,100 +71,110 @@ class App extends React.Component {
       logout: this.logout,
     };
 
-    return (
-      <Layout>
-        <UserContext.Provider value={context}>
-          <Router>
-            <Header>
-              <Nav />
-            </Header>
+    const { doneLoading } = this.state;
 
-            <Content style={contentStyles}>
-              <Switch>
-                <Route path="/register" render={() => <Register />} />
-                <Route path="/login" render={() => <Login />} />
-                <Route path="/property/view/:id" render={() => <Property />} />
-                <Route
-                  path="/property/create"
-                  render={() =>
-                    user.loggedIn ? (
-                      <PropertyCreate user={user} />
-                    ) : (
-                      (props) => (
-                        <Redirect
-                          location={props.location}
-                          to={{
-                            pathname: "/login",
-                            state: { unauthorisedAccess: true },
-                          }}
-                        />
-                      )
-                    )
-                  }
-                />
-                <Route
-                  path="/properties/own"
-                  render={() =>
-                    user.loggedIn ? (
-                      <MyProperties user={user} />
-                    ) : (
-                      (props) => (
-                        <Redirect
-                          location={props.location}
-                          to={{
-                            pathname: "/login",
-                            state: { unauthorisedAccess: true },
-                          }}
-                        />
-                      )
-                    )
-                  }
-                />
-                <Route
-                  path="/properties/edit/:id"
-                  render={() =>
-                    user.loggedIn ? (
-                      <PropertyUpdate user={user} />
-                    ) : (
-                      (props) => (
-                        <Redirect
-                          location={props.location}
-                          to={{
-                            pathname: "/login",
-                            state: { unauthorisedAccess: true },
-                          }}
-                        />
-                      )
-                    )
-                  }
-                />
-                <Route
-                  path="/messages/"
-                  render={() =>
-                    user.loggedIn ? (
-                      <Messages user={user} />
-                    ) : (
-                      (props) => (
-                        <Redirect
-                          location={props.location}
-                          to={{
-                            pathname: "/login",
-                            state: { unauthorisedAccess: true },
-                          }}
-                        />
-                      )
-                    )
-                  }
-                />
-                <Route path="/" render={() => <Home ownProperties={false} />} />
-              </Switch>
-            </Content>
+    if (doneLoading)
+      return (
+        <Layout>
+          <UserContext.Provider value={context}>
+            <Router>
+              <Header>
+                <Nav />
+              </Header>
 
-            <Footer style={{ textAlign: "center" }}>Created for 304CEM</Footer>
-          </Router>
-        </UserContext.Provider>
-      </Layout>
-    );
+              <Content style={contentStyles}>
+                <Switch>
+                  <Route path="/register" render={() => <Register />} />
+                  <Route
+                    path="/login"
+                    render={({ location }) => <Login location={location} />}
+                  />
+                  <Route
+                    path="/property/view/:id"
+                    render={(props) => {
+                      const { match } = props;
+                      return <Property match={match} />;
+                    }}
+                  />
+                  <Route
+                    path="/property/create"
+                    render={(props) => {
+                      if (user.loggedIn) return <PropertyCreate user={user} />;
+                      return (
+                        <Redirect
+                          location={props.location}
+                          to={{
+                            pathname: "/login",
+                            state: { unauthorisedAccess: true },
+                          }}
+                        />
+                      );
+                    }}
+                  />
+                  <Route
+                    path="/properties/own"
+                    render={(props) => {
+                      if (user.loggedIn) return <MyProperties user={user} />;
+                      return (
+                        <Redirect
+                          location={props.location}
+                          to={{
+                            pathname: "/login",
+                            state: { unauthorisedAccess: true },
+                          }}
+                        />
+                      );
+                    }}
+                  />
+                  <Route
+                    path="/properties/edit/:id"
+                    render={(props) => {
+                      if (user.loggedIn) {
+                        const { match } = props;
+                        return <PropertyUpdate match={match} user={user} />;
+                      }
+                      return (
+                        <Redirect
+                          location={props.location}
+                          to={{
+                            pathname: "/login",
+                            state: { unauthorisedAccess: true },
+                          }}
+                        />
+                      );
+                    }}
+                  />
+                  <Route
+                    path="/messages/"
+                    render={(props) => {
+                      if (user.loggedIn) return <Messages user={user} />;
+                      return (
+                        <Redirect
+                          location={props.location}
+                          to={{
+                            pathname: "/login",
+                            state: { unauthorisedAccess: true },
+                          }}
+                        />
+                      );
+                    }}
+                  />
+                  <Route
+                    path="/"
+                    render={() => <Home ownProperties={false} />}
+                  />
+                </Switch>
+              </Content>
+
+              <Footer style={{ textAlign: "center" }}>
+                Created for 304CEM
+              </Footer>
+            </Router>
+          </UserContext.Provider>
+        </Layout>
+      );
+
+    return <StyledSpin />;
   }
 }
 

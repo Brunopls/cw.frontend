@@ -142,9 +142,9 @@ class Messages extends React.Component {
 Messages.contextType = UserContext;
 
 Messages.propTypes = {
-  user: {
+  user: PropTypes.shape({
     token: PropTypes.string.isRequired,
-  },
+  }),
 };
 
 export default Messages;

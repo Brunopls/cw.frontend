@@ -71,7 +71,7 @@ class PropertyCard extends React.Component {
 
     const loggedInActions = [
       <Button key="view">
-        <Link to={viewLink}>{/* <EyeOutlined key="view" /> */}</Link>
+        <Link to={viewLink}>View</Link>
       </Button>,
       <UserContext.Consumer>
         {(context) => {
@@ -80,11 +80,9 @@ class PropertyCard extends React.Component {
               <>
                 <Space>
                   <Button>
-                    <Link to={updateLink}>{/* <FormOutlined /> */}</Link>
+                    <Link to={updateLink}>Edit</Link>
                   </Button>
-                  <Button onClick={this.showDeleteConfirm}>
-                    {/* <DeleteOutlined /> */}
-                  </Button>
+                  <Button onClick={this.showDeleteConfirm}>Delete</Button>
                 </Space>
               </>
             );
@@ -96,7 +94,7 @@ class PropertyCard extends React.Component {
 
     const homeActions = [
       <Button key="view">
-        <Link to={viewLink}>{/* <EyeOutlined key="view" /> */}</Link>
+        <Link to={viewLink}>view</Link>
       </Button>,
     ];
 

@@ -157,12 +157,12 @@ MessageCard.contextType = UserContext;
 
 MessageCard.propTypes = {
   _id: PropTypes.string,
-  dateSent: PropTypes.instanceOf(Date),
+  dateSent: PropTypes.string,
   inquirerEmail: PropTypes.string,
   text: PropTypes.string,
-  property: {
+  property: PropTypes.shape({
     title: PropTypes.string,
-  },
+  }),
   reload: PropTypes.bool,
 };
 

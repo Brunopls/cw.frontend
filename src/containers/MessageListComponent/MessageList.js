@@ -48,7 +48,7 @@ MessageList.propTypes = {
   messages: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string,
-      dateSent: PropTypes.instanceOf(Date),
+      dateSent: PropTypes.string,
       inquirerEmail: PropTypes.string,
       text: PropTypes.string,
       property: {
