@@ -2,12 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Card, Space, Badge, Button, Image, Modal } from "antd";
 import { Link } from "react-router-dom";
-import {
-  EyeOutlined,
-  FormOutlined,
-  DeleteOutlined,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
+// import {
+//   EyeOutlined,
+//   FormOutlined,
+//   DeleteOutlined,
+//   ExclamationCircleOutlined,
+// } from "@ant-design/icons";
 import config from "../../core/config.json";
 import { status } from "../../core/utilities/requestHandlers";
 
@@ -29,7 +29,7 @@ class PropertyCard extends React.Component {
     const { _id, reloadProperties } = this.props;
     confirm({
       title: "Are you sure?",
-      icon: <ExclamationCircleOutlined />,
+      // icon: <ExclamationCircleOutlined />,
       content: "This action will permanently delete this property.",
       okText: "Yes",
       okType: "danger",
@@ -71,9 +71,7 @@ class PropertyCard extends React.Component {
 
     const loggedInActions = [
       <Button key="view">
-        <Link to={viewLink}>
-          <EyeOutlined key="view" />
-        </Link>
+        <Link to={viewLink}>{/* <EyeOutlined key="view" /> */}</Link>
       </Button>,
       <UserContext.Consumer>
         {(context) => {
@@ -82,12 +80,10 @@ class PropertyCard extends React.Component {
               <>
                 <Space>
                   <Button>
-                    <Link to={updateLink}>
-                      <FormOutlined />
-                    </Link>
+                    <Link to={updateLink}>{/* <FormOutlined /> */}</Link>
                   </Button>
                   <Button onClick={this.showDeleteConfirm}>
-                    <DeleteOutlined />
+                    {/* <DeleteOutlined /> */}
                   </Button>
                 </Space>
               </>
@@ -100,9 +96,7 @@ class PropertyCard extends React.Component {
 
     const homeActions = [
       <Button key="view">
-        <Link to={viewLink}>
-          <EyeOutlined key="view" />
-        </Link>
+        <Link to={viewLink}>{/* <EyeOutlined key="view" /> */}</Link>
       </Button>,
     ];
 

@@ -66,14 +66,14 @@ class App extends React.Component {
 
             <Content style={contentStyles}>
               <Switch>
-                <Route path="/register" render={<Register />} />
-                <Route path="/login" render={<Login />} />
-                <Route path="/property/view/:id" render={<Property />} />
+                <Route path="/register" render={() => <Register />} />
+                <Route path="/login" render={() => <Login />} />
+                <Route path="/property/view/:id" render={() => <Property />} />
                 <Route
                   path="/property/create"
-                  render={
-                    context.user.loggedIn ? (
-                      <PropertyCreate user={context.user} />
+                  render={() =>
+                    user.loggedIn ? (
+                      <PropertyCreate user={user} />
                     ) : (
                       (props) => (
                         <Redirect
@@ -89,9 +89,9 @@ class App extends React.Component {
                 />
                 <Route
                   path="/properties/own"
-                  render={
-                    context.user.loggedIn ? (
-                      <MyProperties user={context.user} />
+                  render={() =>
+                    user.loggedIn ? (
+                      <MyProperties user={user} />
                     ) : (
                       (props) => (
                         <Redirect
@@ -107,9 +107,9 @@ class App extends React.Component {
                 />
                 <Route
                   path="/properties/edit/:id"
-                  render={
-                    context.user.loggedIn ? (
-                      <PropertyUpdate user={context.user} />
+                  render={() =>
+                    user.loggedIn ? (
+                      <PropertyUpdate user={user} />
                     ) : (
                       (props) => (
                         <Redirect
@@ -125,9 +125,9 @@ class App extends React.Component {
                 />
                 <Route
                   path="/messages/"
-                  render={
-                    context.user.loggedIn ? (
-                      <Messages user={context.user} />
+                  render={() =>
+                    user.loggedIn ? (
+                      <Messages user={user} />
                     ) : (
                       (props) => (
                         <Redirect
@@ -141,7 +141,7 @@ class App extends React.Component {
                     )
                   }
                 />
-                <Route path="/" render={<Home ownProperties={false} />} />
+                <Route path="/" render={() => <Home ownProperties={false} />} />
               </Switch>
             </Content>
 

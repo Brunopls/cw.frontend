@@ -12,7 +12,7 @@ import {
   Row,
   Col,
 } from "antd";
-import HomeOutlined from "@ant-design/icons";
+// import HomeOutlined from "@ant-design/icons";
 import { status, json } from "../../core/utilities/requestHandlers";
 import config from "../../core/config.json";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
@@ -218,7 +218,7 @@ class Property extends React.Component {
                 renderItem={(feature) => (
                   <List.Item>
                     <List.Item.Meta
-                      avatar={<HomeOutlined />}
+                      // avatar={<HomeOutlined />}
                       title={feature.title}
                     />
                   </List.Item>
