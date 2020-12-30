@@ -172,7 +172,7 @@ MessageCard.defaultProps = {
   inquirerEmail: undefined,
   text: undefined,
   property: {
-    title: undefined,
+    title: "Can't find",
   },
   reload: false,
 };
