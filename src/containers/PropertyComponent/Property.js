@@ -24,6 +24,7 @@ class Property extends React.Component {
       property: {
         propertyCategory: {},
         propertyFeatures: [],
+        user: {},
       },
       loading: false,
       sendingMessage: false,
@@ -114,29 +115,7 @@ class Property extends React.Component {
   }
 
   render() {
-    const {
-      property: {
-        propertyFeatures,
-        title,
-        description,
-        highPriority,
-        underOffer,
-        askingPrice,
-        location,
-        user: { fullName = "John Doe" },
-        propertyCategory: { title: propertyCategoryTitle },
-      },
-      loading,
-      failed,
-      messageSentSuccessfully,
-      sendingMessage,
-      showMessageForm,
-    } = this.state;
-
-    const features = [];
-    if (propertyFeatures) {
-      propertyFeatures.map((feature) => features.push(feature));
-    }
+    const { loading, failed } = this.state;
     if (loading) {
       return <StyledSpin />;
     }
@@ -151,6 +130,27 @@ class Property extends React.Component {
       );
     }
 
+    const {
+      property: {
+        propertyFeatures,
+        title,
+        description,
+        highPriority,
+        underOffer,
+        askingPrice,
+        location,
+        user,
+        propertyCategory: { title: propertyCategoryTitle },
+      },
+      messageSentSuccessfully,
+      sendingMessage,
+      showMessageForm,
+    } = this.state;
+
+    const features = [];
+    if (propertyFeatures) {
+      propertyFeatures.map((feature) => features.push(feature));
+    }
     return (
       <>
         <Row>
@@ -196,7 +196,7 @@ class Property extends React.Component {
                 £{askingPrice}
               </Card>
               <Card type="inner" style={{ marginBottom: 10 }} title="Agent">
-                {fullName}
+                {user.fullName}
               </Card>
               <Card type="inner" style={{ marginBottom: 10 }} title="Category">
                 {propertyCategoryTitle}

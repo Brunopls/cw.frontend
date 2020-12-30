@@ -25,8 +25,8 @@ class LoginForm extends React.Component {
   componentDidMount() {
     const { location } = this.props;
     const { state } = location;
-    const { unauthorisedAccess } = state;
     if (state) {
+      const { unauthorisedAccess } = state;
       if (unauthorisedAccess) {
         message.error("You have to be logged in to access that feature.");
       }

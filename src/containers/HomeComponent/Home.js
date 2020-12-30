@@ -231,12 +231,10 @@ class Home extends React.Component {
 Home.contextType = UserContext;
 
 Home.propTypes = {
-  user: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string,
-      loggedIn: PropTypes.bool,
-    })
-  ),
+  user: PropTypes.shape({
+    id: PropTypes.string,
+    loggedIn: PropTypes.bool,
+  }),
   ownProperties: PropTypes.bool.isRequired,
 };
 
