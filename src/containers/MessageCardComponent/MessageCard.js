@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Card, Space, Button, Modal } from "antd";
-import {
-  EyeOutlined,
-  DeleteOutlined,
-  ExclamationCircleOutlined,
-  FolderOutlined,
-} from "@ant-design/icons";
+// import {
+//   EyeOutlined,
+//   DeleteOutlined,
+//   ExclamationCircleOutlined,
+//   FolderOutlined,
+// } from "@ant-design/icons";
 import config from "../../core/config.json";
 import { status } from "../../core/utilities/requestHandlers";
 
@@ -31,7 +31,7 @@ class MessageCard extends React.Component {
 
     confirm({
       title: "Are you sure?",
-      icon: <ExclamationCircleOutlined />,
+      // icon: <ExclamationCircleOutlined />,
       content: "This action will permanently delete this message.",
       okText: "Yes",
       okType: "danger",
@@ -63,7 +63,7 @@ class MessageCard extends React.Component {
 
     confirm({
       title: "Are you sure?",
-      icon: <ExclamationCircleOutlined />,
+      // icon: <ExclamationCircleOutlined />,
       content: "This message will be archived.",
       okText: "Yes",
       okType: "danger",
@@ -114,13 +114,13 @@ class MessageCard extends React.Component {
     const actions = [
       <Space>
         <Button key="view" onClick={this.showMessageInfo}>
-          <EyeOutlined key="view" />
+          {/* <EyeOutlined key="view" /> */}
         </Button>
         <Button key="archive" onClick={this.showArchiveConfirm}>
-          <FolderOutlined />
+          {/* <FolderOutlined /> */}
         </Button>
         <Button key="delete" onClick={this.showDeleteConfirm}>
-          <DeleteOutlined />
+          {/* <DeleteOutlined /> */}
         </Button>
       </Space>,
     ];

@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { Menu } from "antd";
 import { Link } from "react-router-dom";
-import HomeFilled from "@ant-design/icons";
 import UserContext from "../../core/contexts/user";
 
 const Nav = () => {
@@ -38,9 +37,6 @@ const Nav = () => {
   return (
     <>
       <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
-        <Menu.Item disabled key="0">
-          <HomeFilled />
-        </Menu.Item>
         <Menu.Item key="1">
           <Link to="/">Home</Link>
         </Menu.Item>

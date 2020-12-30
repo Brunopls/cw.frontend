@@ -77,14 +77,15 @@ class Home extends React.Component {
       selectedFeatures,
       selectedCategories,
     } = this.state;
-    const { user } = this.props;
-    const { id } = this.user;
+    const {
+      user: { id: userID },
+    } = this.props;
     this.setState({ loading: true });
     fetch(
       `${
         config.BACK_END_URL
       }/api/properties/?limit=${limit}&page=${page}&query=${query}&features=${selectedFeatures}&categories=${selectedCategories}&user=${
-        user === undefined ? "" : `${id}&onlyVisible=false`
+        userID === undefined ? "" : `${userID}&onlyVisible=false`
       }`,
       {
         method: "GET",
