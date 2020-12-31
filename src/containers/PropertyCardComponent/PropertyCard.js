@@ -71,7 +71,7 @@ class PropertyCard extends React.Component {
 
     const loggedInActions = [
       <Button key="view">
-        <Link to={viewLink}>View</Link>
+        <Link to={viewLink}>view</Link>
       </Button>,
       <UserContext.Consumer>
         {(context) => {
@@ -80,9 +80,9 @@ class PropertyCard extends React.Component {
               <>
                 <Space>
                   <Button>
-                    <Link to={updateLink}>Edit</Link>
+                    <Link to={updateLink}>edit</Link>
                   </Button>
-                  <Button onClick={this.showDeleteConfirm}>Delete</Button>
+                  <Button onClick={this.showDeleteConfirm}>delete</Button>
                 </Space>
               </>
             );

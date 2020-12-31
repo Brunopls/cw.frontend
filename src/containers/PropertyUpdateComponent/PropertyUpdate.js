@@ -17,6 +17,17 @@ import { Redirect } from "react-router-dom";
 import { status, json } from "../../core/utilities/requestHandlers";
 import config from "../../core/config.json";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
+import {
+  titleProps,
+  descriptionProps,
+  locationProps,
+  categoryProps,
+  featuresProps,
+  askingPriceProps,
+  visibleProps,
+  highPriorityProps,
+  underOfferProps,
+} from "../../core/utilities/propertiesFormProps";
 
 const { Option } = Select;
 
@@ -140,6 +151,30 @@ class PropertyUpdate extends React.Component {
   }
 
   render() {
+    const { rules: titleRules, tooltip: titleTooltip } = titleProps;
+    const {
+      rules: descriptionRules,
+      tooltip: descriptionTooltip,
+    } = descriptionProps;
+    const { rules: locationRules, tooltip: locationTooltip } = locationProps;
+    const {
+      rules: askingPriceRules,
+      tooltip: askingPriceTooltip,
+    } = askingPriceProps;
+    const { rules: categoryRules, tooltip: categoryTooltip } = categoryProps;
+    const { rules: featuresRules, tooltip: featuresTooltip } = featuresProps;
+    const {
+      rules: visibleRules,
+      tooltip: { title: visibleTooltip },
+    } = visibleProps;
+    const {
+      rules: underOfferRules,
+      tooltip: underOfferTooltip,
+    } = underOfferProps;
+    const {
+      rules: highPriorityRules,
+      tooltip: highPriorityTooltip,
+    } = highPriorityProps;
     const { failed, successful, redirect, loading } = this.state;
 
     if (loading) {
@@ -233,7 +268,19 @@ class PropertyUpdate extends React.Component {
 
       return (
         <>
-          <Form name="updateProperty" onFinish={this.onFinish}>
+          <Form
+            name="updateProperty"
+            onFinish={this.onFinish}
+            colon={false}
+            initialValues={{
+              title,
+              description,
+              location,
+              visible,
+              highPriority,
+              underOffer,
+            }}
+          >
             <Row>
               <Col
                 span={18}
@@ -257,8 +304,13 @@ class PropertyUpdate extends React.Component {
                   }
                 >
                   <Card type="inner" style={{ marginBottom: 10 }} title="Title">
-                    <Form.Item initialValue={title} name="title">
-                      <Input defaultValue={title} />
+                    <Form.Item
+                      name="title"
+                      rules={titleRules}
+                      tooltip={titleTooltip}
+                      label={" "}
+                    >
+                      <Input />
                     </Form.Item>
                   </Card>
                   <Card
@@ -266,8 +318,13 @@ class PropertyUpdate extends React.Component {
                     style={{ marginBottom: 10 }}
                     title="Description"
                   >
-                    <Form.Item initialValue={description} name="description">
-                      <Input defaultValue={description} />
+                    <Form.Item
+                      name="description"
+                      rules={descriptionRules}
+                      tooltip={descriptionTooltip}
+                      label={" "}
+                    >
+                      <Input />
                     </Form.Item>
                   </Card>
                   <Card
@@ -275,8 +332,13 @@ class PropertyUpdate extends React.Component {
                     style={{ marginBottom: 10 }}
                     title="Location"
                   >
-                    <Form.Item initialValue={location} name="location">
-                      <Input defaultValue={location} />
+                    <Form.Item
+                      name="location"
+                      rules={locationRules}
+                      tooltip={locationTooltip}
+                      label={" "}
+                    >
+                      <Input />
                     </Form.Item>
                   </Card>
                   <Card
@@ -284,8 +346,14 @@ class PropertyUpdate extends React.Component {
                     style={{ marginBottom: 10 }}
                     title="Asking Price"
                   >
-                    <Form.Item initialValue={askingPrice} name="askingPrice">
-                      <Input defaultValue={askingPrice} />
+                    <Form.Item
+                      name="askingPrice"
+                      initialValue={String(askingPrice)}
+                      rules={askingPriceRules}
+                      tooltip={askingPriceTooltip}
+                      label={" "}
+                    >
+                      <Input prefix="£" />
                     </Form.Item>
                   </Card>
                   <Card
@@ -294,13 +362,13 @@ class PropertyUpdate extends React.Component {
                     title="Category"
                   >
                     <Form.Item
-                      initialValue={selectedCategory}
                       name="propertyCategory"
+                      initialValue={selectedCategory}
+                      rules={categoryRules}
+                      tooltip={categoryTooltip}
+                      label={" "}
                     >
-                      <Select
-                        placeholder="Property Category"
-                        defaultValue={selectedCategory}
-                      >
+                      <Select placeholder="Property Category">
                         {categoryOptions}
                       </Select>
                     </Form.Item>
@@ -318,13 +386,12 @@ class PropertyUpdate extends React.Component {
                 <Card id="sideCard" title="Features">
                   <Form.Item
                     initialValue={selectedFeatures}
+                    rules={featuresRules}
+                    tooltip={featuresTooltip}
+                    label={" "}
                     name="propertyFeatures"
                   >
-                    <Select
-                      mode="multiple"
-                      placeholder="Property features"
-                      defaultValue={selectedFeatures}
-                    >
+                    <Select mode="multiple" placeholder="Property features">
                       {featureOptions}
                     </Select>
                   </Form.Item>
@@ -335,7 +402,12 @@ class PropertyUpdate extends React.Component {
                     style={{ marginBottom: 10 }}
                     title="Visible"
                   >
-                    <Form.Item initialValue={visible} name="visible">
+                    <Form.Item
+                      name="visible"
+                      rules={visibleRules}
+                      tooltip={visibleTooltip}
+                      label={" "}
+                    >
                       <Switch defaultChecked={visible} />
                     </Form.Item>
                   </Card>
@@ -344,7 +416,12 @@ class PropertyUpdate extends React.Component {
                     style={{ marginBottom: 10 }}
                     title="High Priority"
                   >
-                    <Form.Item initialValue={highPriority} name="highPriority">
+                    <Form.Item
+                      name="highPriority"
+                      rules={highPriorityRules}
+                      tooltip={highPriorityTooltip}
+                      label={" "}
+                    >
                       <Switch defaultChecked={highPriority} />
                     </Form.Item>
                   </Card>
@@ -353,7 +430,12 @@ class PropertyUpdate extends React.Component {
                     style={{ marginBottom: 10 }}
                     title="Under Offer"
                   >
-                    <Form.Item initialValue={underOffer} name="underOffer">
+                    <Form.Item
+                      name="underOffer"
+                      rules={underOfferRules}
+                      tooltip={underOfferTooltip}
+                      label={" "}
+                    >
                       <Switch defaultChecked={underOffer} />
                     </Form.Item>
                   </Card>
@@ -377,14 +459,14 @@ class PropertyUpdate extends React.Component {
 }
 
 PropertyUpdate.propTypes = {
-  match: {
-    params: {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
       id: PropTypes.string.isRequired,
-    },
-  },
-  user: {
+    }),
+  }),
+  user: PropTypes.shape({
     token: PropTypes.string.isRequired,
-  },
+  }),
 };
 
 export default PropertyUpdate;

@@ -115,12 +115,15 @@ class MessageCard extends React.Component {
       <Space>
         <Button key="view" onClick={this.showMessageInfo}>
           {/* <EyeOutlined key="view" /> */}
+          view
         </Button>
         <Button key="archive" onClick={this.showArchiveConfirm}>
           {/* <FolderOutlined /> */}
+          archive
         </Button>
         <Button key="delete" onClick={this.showDeleteConfirm}>
           {/* <DeleteOutlined /> */}
+          delete
         </Button>
       </Space>,
     ];
@@ -172,7 +175,7 @@ MessageCard.defaultProps = {
   inquirerEmail: undefined,
   text: undefined,
   property: {
-    title: "Can't find",
+    title: undefined,
   },
   reload: false,
 };

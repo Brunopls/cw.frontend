@@ -3,14 +3,13 @@ import { Form, Input, Button, Result } from "antd";
 import { Link } from "react-router-dom";
 import { status, json } from "../../core/utilities/requestHandlers";
 import config from "../../core/config.json";
-
 import {
   emailRules,
   passwordRules,
   confirmRules,
   usernameRules,
   signUpCodeRules,
-} from "./RegisterRules";
+} from "../../core/utilities/authRules";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
 
 class RegisterForm extends React.Component {
@@ -27,7 +26,7 @@ class RegisterForm extends React.Component {
   onFinish = (values) => {
     this.setState({ loading: true });
     const { confirm, ...data } = values; // ignore the 'confirm' value in data sent
-    fetch(`${config.BACK_END_URL}/api/properties/`, {
+    fetch(`${config.BACK_END_URL}/api/users/`, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {

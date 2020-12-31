@@ -22,6 +22,8 @@ import PropertyList from "../PropertyListComponent/PropertyList";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
 import UserContext from "../../core/contexts/user";
 
+import "./Home.css";
+
 const { Option } = Select;
 
 class Home extends React.Component {
@@ -140,7 +142,11 @@ class Home extends React.Component {
     return (
       <>
         <Row>
-          <Divider>Properties</Divider>
+          {ownProperties ? (
+            <Divider>My Properties</Divider>
+          ) : (
+            <Divider>Properties</Divider>
+          )}
           <Col span={24} xl={{ span: 18 }}>
             {loading ? (
               <StyledSpin />
@@ -215,13 +221,22 @@ class Home extends React.Component {
                 </Form.Item>
               </Form>
             </Card>
+            <Card
+              style={{ marginLeft: 10 }}
+              title="Pages"
+              className="bottomRowSecondCol"
+            >
+              <div className="container">
+                <Pagination
+                  class="pagination"
+                  defaultCurrent={1}
+                  pageSize={limit}
+                  total={count}
+                  onChange={this.onChangePage}
+                />
+              </div>
+            </Card>
           </Col>
-          <Pagination
-            defaultCurrent={1}
-            pageSize={limit}
-            total={count}
-            onChange={this.onChangePage}
-          />
         </Row>
       </>
     );
