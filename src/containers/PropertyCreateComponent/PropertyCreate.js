@@ -15,6 +15,18 @@ import { Redirect } from "react-router-dom";
 import { status, json } from "../../core/utilities/requestHandlers";
 import config from "../../core/config.json";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
+import {
+  titleProps,
+  descriptionProps,
+  locationProps,
+  categoryProps,
+  featuresProps,
+  askingPriceProps,
+  visibleProps,
+  highPriorityProps,
+  underOfferProps,
+} from "../../core/utilities/propertiesFormProps";
+
 import "./PropertyCreate.css";
 
 const { Option } = Select;
@@ -175,14 +187,43 @@ class Property extends React.Component {
       );
     }
 
+    const { rules: titleRules, tooltip: titleTooltip } = titleProps;
+    const {
+      rules: descriptionRules,
+      tooltip: descriptionTooltip,
+    } = descriptionProps;
+    const { rules: locationRules, tooltip: locationTooltip } = locationProps;
+    const {
+      rules: askingPriceRules,
+      tooltip: askingPriceTooltip,
+    } = askingPriceProps;
+    const { rules: categoryRules, tooltip: categoryTooltip } = categoryProps;
+    const { rules: featuresRules, tooltip: featuresTooltip } = featuresProps;
+    const {
+      rules: visibleRules,
+      tooltip: { title: visibleTooltip },
+    } = visibleProps;
+    const {
+      rules: underOfferRules,
+      tooltip: underOfferTooltip,
+    } = underOfferProps;
+    const {
+      rules: highPriorityRules,
+      tooltip: highPriorityTooltip,
+    } = highPriorityProps;
     return (
       <>
-        <Form name="createProperty" onFinish={this.onFinish}>
+        <Form name="createProperty" onFinish={this.onFinish} colon={false}>
           <Row>
             <Col span={18}>
               <Card title="Add New Property">
                 <Card type="inner" style={{ marginBottom: 10 }} title="Title">
-                  <Form.Item name="title">
+                  <Form.Item
+                    name="title"
+                    rules={titleRules}
+                    tooltip={titleTooltip}
+                    label={" "}
+                  >
                     <Input />
                   </Form.Item>
                 </Card>
@@ -191,7 +232,12 @@ class Property extends React.Component {
                   style={{ marginBottom: 10 }}
                   title="Description"
                 >
-                  <Form.Item name="description">
+                  <Form.Item
+                    name="description"
+                    rules={descriptionRules}
+                    tooltip={descriptionTooltip}
+                    label={" "}
+                  >
                     <Input />
                   </Form.Item>
                 </Card>
@@ -200,7 +246,12 @@ class Property extends React.Component {
                   style={{ marginBottom: 10 }}
                   title="Location"
                 >
-                  <Form.Item name="location">
+                  <Form.Item
+                    name="location"
+                    rules={locationRules}
+                    tooltip={locationTooltip}
+                    label={" "}
+                  >
                     <Input />
                   </Form.Item>
                 </Card>
@@ -209,8 +260,13 @@ class Property extends React.Component {
                   style={{ marginBottom: 10 }}
                   title="Asking Price"
                 >
-                  <Form.Item name="askingPrice">
-                    <Input />
+                  <Form.Item
+                    name="askingPrice"
+                    rules={askingPriceRules}
+                    tooltip={askingPriceTooltip}
+                    label={" "}
+                  >
+                    <Input prefix="£" />
                   </Form.Item>
                 </Card>
                 <Card
@@ -218,7 +274,12 @@ class Property extends React.Component {
                   style={{ marginBottom: 10 }}
                   title="Category"
                 >
-                  <Form.Item name="propertyCategory">
+                  <Form.Item
+                    name="propertyCategory"
+                    rules={categoryRules}
+                    tooltip={categoryTooltip}
+                    label={" "}
+                  >
                     <Select placeholder="Property Category">
                       {categoryOptions}
                     </Select>
@@ -228,7 +289,12 @@ class Property extends React.Component {
             </Col>
             <Col span={4}>
               <Card id="sideCard" title="Features">
-                <Form.Item name="propertyFeatures">
+                <Form.Item
+                  name="propertyFeatures"
+                  rules={featuresRules}
+                  tooltip={featuresTooltip}
+                  label={" "}
+                >
                   <Select mode="multiple" placeholder="Property features">
                     {featureOptions}
                   </Select>
@@ -236,7 +302,12 @@ class Property extends React.Component {
               </Card>
               <Card id="sideCard" title="Options">
                 <Card type="inner" style={{ marginBottom: 10 }} title="Visible">
-                  <Form.Item name="visible">
+                  <Form.Item
+                    name="visible"
+                    rules={visibleRules}
+                    tooltip={visibleTooltip}
+                    label={" "}
+                  >
                     <Switch defaultChecked />
                   </Form.Item>
                 </Card>
@@ -244,8 +315,14 @@ class Property extends React.Component {
                   type="inner"
                   style={{ marginBottom: 10 }}
                   title="High Priority"
+                  label={" "}
                 >
-                  <Form.Item name="highPriority">
+                  <Form.Item
+                    name="highPriority"
+                    rules={highPriorityRules}
+                    tooltip={highPriorityTooltip}
+                    label={" "}
+                  >
                     <Switch />
                   </Form.Item>
                 </Card>
@@ -254,7 +331,12 @@ class Property extends React.Component {
                   style={{ marginBottom: 10 }}
                   title="Under Offer"
                 >
-                  <Form.Item name="underOffer">
+                  <Form.Item
+                    name="underOffer"
+                    rules={underOfferRules}
+                    tooltip={underOfferTooltip}
+                    label={" "}
+                  >
                     <Switch />
                   </Form.Item>
                 </Card>

@@ -18,6 +18,7 @@ import PropertyCreate from "./containers/PropertyCreateComponent/PropertyCreate"
 import PropertyUpdate from "./containers/PropertyUpdateComponent/PropertyUpdate";
 import MyProperties from "./containers/MyPropertiesComponent/MyProperties";
 import Messages from "./containers/MessagesComponent/Messages";
+import ErrorComponent from "./containers/ErrorComponent/ErrorComponent";
 
 import UserContext from "./core/contexts/user";
 
@@ -38,9 +39,14 @@ class App extends React.Component {
     };
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
+    this.getCurrentUser = this.getCurrentUser.bind(this);
   }
 
   componentDidMount() {
+    this.getCurrentUser();
+  }
+
+  getCurrentUser() {
     const authenticatedUser = JSON.parse(
       localStorage.getItem("authenticatedUser")
     );
@@ -84,90 +90,94 @@ class App extends React.Component {
 
               <Content style={contentStyles}>
                 <Switch>
-                  <Route path="/register" render={() => <Register />} />
-                  <Route
-                    path="/login"
-                    render={({ location }) => <Login location={location} />}
-                  />
-                  <Route
-                    path="/property/view/:id"
-                    render={(props) => {
-                      const { match } = props;
-                      return <Property match={match} />;
-                    }}
-                  />
-                  <Route
-                    path="/property/create"
-                    render={(props) => {
-                      if (user.loggedIn) return <PropertyCreate user={user} />;
-                      return (
-                        <Redirect
-                          location={props.location}
-                          to={{
-                            pathname: "/login",
-                            state: { unauthorisedAccess: true },
-                          }}
-                        />
-                      );
-                    }}
-                  />
-                  <Route
-                    path="/properties/own"
-                    render={(props) => {
-                      if (user.loggedIn) return <MyProperties user={user} />;
-                      return (
-                        <Redirect
-                          location={props.location}
-                          to={{
-                            pathname: "/login",
-                            state: { unauthorisedAccess: true },
-                          }}
-                        />
-                      );
-                    }}
-                  />
-                  <Route
-                    path="/properties/edit/:id"
-                    render={(props) => {
-                      if (user.loggedIn) {
+                  <ErrorComponent>
+                    <Route path="/register" render={() => <Register />} />
+                    <Route
+                      path="/login"
+                      render={({ location }) => <Login location={location} />}
+                    />
+                    <Route
+                      path="/property/view/:id"
+                      render={(props) => {
                         const { match } = props;
-                        return <PropertyUpdate match={match} user={user} />;
-                      }
-                      return (
-                        <Redirect
-                          location={props.location}
-                          to={{
-                            pathname: "/login",
-                            state: { unauthorisedAccess: true },
-                          }}
-                        />
-                      );
-                    }}
-                  />
-                  <Route
-                    path="/messages/"
-                    render={(props) => {
-                      if (user.loggedIn) return <Messages user={user} />;
-                      return (
-                        <Redirect
-                          location={props.location}
-                          to={{
-                            pathname: "/login",
-                            state: { unauthorisedAccess: true },
-                          }}
-                        />
-                      );
-                    }}
-                  />
-                  <Route
-                    path="/"
-                    render={() => <Home ownProperties={false} />}
-                  />
+                        return <Property match={match} />;
+                      }}
+                    />
+                    <Route
+                      path="/property/create"
+                      render={(props) => {
+                        if (user.loggedIn)
+                          return <PropertyCreate user={user} />;
+                        return (
+                          <Redirect
+                            location={props.location}
+                            to={{
+                              pathname: "/login",
+                              state: { unauthorisedAccess: true },
+                            }}
+                          />
+                        );
+                      }}
+                    />
+                    <Route
+                      path="/properties/own"
+                      render={(props) => {
+                        if (user.loggedIn) return <MyProperties user={user} />;
+                        return (
+                          <Redirect
+                            location={props.location}
+                            to={{
+                              pathname: "/login",
+                              state: { unauthorisedAccess: true },
+                            }}
+                          />
+                        );
+                      }}
+                    />
+                    <Route
+                      path="/properties/edit/:id"
+                      render={(props) => {
+                        if (user.loggedIn) {
+                          const { match } = props;
+                          return <PropertyUpdate match={match} user={user} />;
+                        }
+                        return (
+                          <Redirect
+                            location={props.location}
+                            to={{
+                              pathname: "/login",
+                              state: { unauthorisedAccess: true },
+                            }}
+                          />
+                        );
+                      }}
+                    />
+                    <Route
+                      path="/messages/"
+                      render={(props) => {
+                        if (user.loggedIn) return <Messages user={user} />;
+                        return (
+                          <Redirect
+                            location={props.location}
+                            to={{
+                              pathname: "/login",
+                              state: { unauthorisedAccess: true },
+                            }}
+                          />
+                        );
+                      }}
+                    />
+                    <Route
+                      exact
+                      path="/"
+                      render={() => <Home ownProperties={false} />}
+                    />
+                  </ErrorComponent>
                 </Switch>
               </Content>
 
               <Footer style={{ textAlign: "center" }}>
-                Created for 304CEM
+                Created for 304CEM by Bruno Correia
               </Footer>
             </Router>
           </UserContext.Provider>

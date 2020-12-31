@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 import { status, json } from "../../core/utilities/requestHandlers";
 import config from "../../core/config.json";
 
-import { emailRules, passwordRules } from "./LoginRules";
+import { emailRules, passwordRules } from "../../core/utilities/authRules";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
 
 import UserContext from "../../core/contexts/user";

@@ -3,6 +3,9 @@ exports.emailRules = [
   { required: true, message: "Please input your E-mail!" },
 ];
 
-exports.passwordRules = [
-  { required: true, message: "Please input your password!" },
+exports.textRules = [
+  {
+    required: true,
+    message: "Please write a messsage to send!",
+  },
 ];

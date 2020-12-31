@@ -19,6 +19,8 @@ import MessageList from "../MessageListComponent/MessageList";
 
 import UserContext from "../../core/contexts/user";
 
+import "./Messages.css";
+
 class Messages extends React.Component {
   constructor(props) {
     super(props);
@@ -124,13 +126,22 @@ class Messages extends React.Component {
                   </Form.Item>
                 </Form>
               </Card>
+              <Card
+                style={{ marginLeft: 10 }}
+                title="Pages"
+                className="bottomRowSecondCol"
+              >
+                <div className="container">
+                  <Pagination
+                    class="pagination"
+                    defaultCurrent={1}
+                    pageSize={limit}
+                    total={count}
+                    onChange={this.onChangePage}
+                  />
+                </div>
+              </Card>
             </Col>
-            <Pagination
-              defaultCurrent={1}
-              pageSize={limit}
-              total={count}
-              onChange={this.onChangePage}
-            />
           </Row>
         </>
       );

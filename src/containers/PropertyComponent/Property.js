@@ -16,6 +16,7 @@ import {
 import { status, json } from "../../core/utilities/requestHandlers";
 import config from "../../core/config.json";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
+import { emailRules, textRules } from "../../core/utilities/messageFormProps";
 
 class Property extends React.Component {
   constructor(props) {
@@ -242,12 +243,12 @@ class Property extends React.Component {
                   scrollToFirstError
                 >
                   <Card type="inner" title="Your E-mail">
-                    <Form.Item name="inquirerEmail">
+                    <Form.Item name="inquirerEmail" rules={emailRules}>
                       <Input placeholder="Your e-mail address" />
                     </Form.Item>
                   </Card>
                   <Card type="inner" title="Message">
-                    <Form.Item name="text">
+                    <Form.Item name="text" rules={textRules}>
                       <Input.TextArea placeholder="Write your message here..." />
                     </Form.Item>
                   </Card>
