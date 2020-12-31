@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/App.js | cw.frontend</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/App.js~App.html">App</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-register">register</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unregister">unregister</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-styledspincomponent">components/StyledSpinComponent</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-StyledSpin">StyledSpin</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#containers-mypropertiescomponent">containers/MyPropertiesComponent</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-MyProperties">MyProperties</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#core-contexts">core/contexts</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-UserContext">UserContext</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#core-utilities">core/utilities</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-json">json</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-status">status</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/App.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import React from &quot;react&quot;;
+import &quot;antd/dist/antd.css&quot;;
+import { Layout, message } from &quot;antd&quot;;
+import &quot;./App.css&quot;;
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from &quot;react-router-dom&quot;;
+
+import Nav from &quot;./components/NavBarComponent/NavBar&quot;;
+import Register from &quot;./containers/RegisterComponent/Register&quot;;
+import Login from &quot;./containers/LoginComponent/Login&quot;;
+import Home from &quot;./containers/HomeComponent/Home&quot;;
+import Property from &quot;./containers/PropertyComponent/Property&quot;;
+import PropertyCreate from &quot;./containers/PropertyCreateComponent/PropertyCreate&quot;;
+import PropertyUpdate from &quot;./containers/PropertyUpdateComponent/PropertyUpdate&quot;;
+import MyProperties from &quot;./containers/MyPropertiesComponent/MyProperties&quot;;
+import Messages from &quot;./containers/MessagesComponent/Messages&quot;;
+import ErrorComponent from &quot;./containers/ErrorComponent/ErrorComponent&quot;;
+
+import UserContext from &quot;./core/contexts/user&quot;;
+
+import StyledSpin from &quot;./components/StyledSpinComponent/StyledSpin&quot;;
+
+const { Header, Footer, Content } = Layout;
+
+const contentStyles = {
+  padding: 35,
+};
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: { loggedIn: false },
+      doneLoading: false,
+    };
+    this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
+    this.getCurrentUser = this.getCurrentUser.bind(this);
+  }
+
+  componentDidMount() {
+    this.getCurrentUser();
+  }
+
+  getCurrentUser() {
+    const authenticatedUser = JSON.parse(
+      localStorage.getItem(&quot;authenticatedUser&quot;)
+    );
+    let userObject;
+    if (authenticatedUser) userObject = authenticatedUser;
+    else userObject = { loggedIn: false };
+    this.setState({ user: userObject, doneLoading: true });
+  }
+
+  login(user) {
+    const userObject = user;
+    userObject.loggedIn = true;
+    localStorage.setItem(&quot;authenticatedUser&quot;, JSON.stringify(userObject));
+    this.setState({ user: userObject });
+  }
+
+  logout() {
+    this.setState({ user: { loggedIn: false } });
+    localStorage.removeItem(&quot;authenticatedUser&quot;);
+    message.warning(&quot;Successfully logged out!&quot;);
+  }
+
+  render() {
+    const { user } = this.state;
+    const context = {
+      user,
+      login: this.login,
+      logout: this.logout,
+    };
+
+    const { doneLoading } = this.state;
+
+    if (doneLoading)
+      return (
+        &lt;Layout&gt;
+          &lt;UserContext.Provider value={context}&gt;
+            &lt;Router&gt;
+              &lt;Header&gt;
+                &lt;Nav /&gt;
+              &lt;/Header&gt;
+
+              &lt;Content style={contentStyles}&gt;
+                &lt;Switch&gt;
+                  &lt;ErrorComponent&gt;
+                    &lt;Route path=&quot;/register&quot; render={() =&gt; &lt;Register /&gt;} /&gt;
+                    &lt;Route
+                      path=&quot;/login&quot;
+                      render={({ location }) =&gt; &lt;Login location={location} /&gt;}
+                    /&gt;
+                    &lt;Route
+                      path=&quot;/property/view/:id&quot;
+                      render={(props) =&gt; {
+                        const { match } = props;
+                        return &lt;Property match={match} /&gt;;
+                      }}
+                    /&gt;
+                    &lt;Route
+                      path=&quot;/property/create&quot;
+                      render={(props) =&gt; {
+                        if (user.loggedIn)
+                          return &lt;PropertyCreate user={user} /&gt;;
+                        return (
+                          &lt;Redirect
+                            location={props.location}
+                            to={{
+                              pathname: &quot;/login&quot;,
+                              state: { unauthorisedAccess: true },
+                            }}
+                          /&gt;
+                        );
+                      }}
+                    /&gt;
+                    &lt;Route
+                      path=&quot;/properties/own&quot;
+                      render={(props) =&gt; {
+                        if (user.loggedIn) return &lt;MyProperties user={user} /&gt;;
+                        return (
+                          &lt;Redirect
+                            location={props.location}
+                            to={{
+                              pathname: &quot;/login&quot;,
+                              state: { unauthorisedAccess: true },
+                            }}
+                          /&gt;
+                        );
+                      }}
+                    /&gt;
+                    &lt;Route
+                      path=&quot;/properties/edit/:id&quot;
+                      render={(props) =&gt; {
+                        if (user.loggedIn) {
+                          const { match } = props;
+                          return &lt;PropertyUpdate match={match} user={user} /&gt;;
+                        }
+                        return (
+                          &lt;Redirect
+                            location={props.location}
+                            to={{
+                              pathname: &quot;/login&quot;,
+                              state: { unauthorisedAccess: true },
+                            }}
+                          /&gt;
+                        );
+                      }}
+                    /&gt;
+                    &lt;Route
+                      path=&quot;/messages/&quot;
+                      render={(props) =&gt; {
+                        if (user.loggedIn) return &lt;Messages user={user} /&gt;;
+                        return (
+                          &lt;Redirect
+                            location={props.location}
+                            to={{
+                              pathname: &quot;/login&quot;,
+                              state: { unauthorisedAccess: true },
+                            }}
+                          /&gt;
+                        );
+                      }}
+                    /&gt;
+                    &lt;Route
+                      exact
+                      path=&quot;/&quot;
+                      render={() =&gt; &lt;Home ownProperties={false} /&gt;}
+                    /&gt;
+                  &lt;/ErrorComponent&gt;
+                &lt;/Switch&gt;
+              &lt;/Content&gt;
+
+              &lt;Footer style={{ textAlign: &quot;center&quot; }}&gt;
+                Created for 304CEM by Bruno Correia
+              &lt;/Footer&gt;
+            &lt;/Router&gt;
+          &lt;/UserContext.Provider&gt;
+        &lt;/Layout&gt;
+      );
+
+    return &lt;StyledSpin /&gt;;
+  }
+}
+
+export default App;
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

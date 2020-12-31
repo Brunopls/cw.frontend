@@ -8,6 +8,8 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "antd": "^4.9.4",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-jsx-plugin": "^1.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -41,6 +43,8 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
+    "esdoc": "^1.1.0",
+    "esdoc-standard-plugin": "^1.0.0",
     "eslint": "^7.16.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^7.1.0",

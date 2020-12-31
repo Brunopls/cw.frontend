@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/core/utilities/propertiesFormProps.js | cw.frontend</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/App.js~App.html">App</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-register">register</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unregister">unregister</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-styledspincomponent">components/StyledSpinComponent</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-StyledSpin">StyledSpin</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#containers-mypropertiescomponent">containers/MyPropertiesComponent</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-MyProperties">MyProperties</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#core-contexts">core/contexts</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-UserContext">UserContext</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#core-utilities">core/utilities</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-json">json</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-status">status</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/core/utilities/propertiesFormProps.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">exports.titleProps = {
+  rules: [
+    {
+      type: &quot;string&quot;,
+      required: true,
+      message: &quot;Please provide a description!&quot;,
+    },
+  ],
+  tooltip: {
+    title: &quot;What would you like to be the title of your listing?&quot;,
+    placement: &quot;leftBottom&quot;,
+  },
+};
+
+exports.descriptionProps = {
+  rules: [
+    {
+      type: &quot;string&quot;,
+      required: true,
+      message: &quot;Please provide a description!&quot;,
+    },
+  ],
+  tooltip: {
+    title: &quot;What about your property makes it special?&quot;,
+    placement: &quot;leftBottom&quot;,
+  },
+};
+
+exports.locationProps = {
+  rules: [
+    { type: &quot;string&quot;, required: true, message: &quot;Please specify a location!&quot; },
+  ],
+  tooltip: {
+    title: &quot;Where is your property located?&quot;,
+    placement: &quot;leftBottom&quot;,
+  },
+};
+
+exports.askingPriceProps = {
+  rules: [{ type: &quot;string&quot; }],
+  tooltip: {
+    title: &quot;What is your asking price for this property?&quot;,
+    placement: &quot;leftBottom&quot;,
+  },
+};
+
+exports.categoryProps = {
+  rules: [
+    { type: &quot;string&quot;, required: true, message: &quot;Please specify a category!&quot; },
+  ],
+  tooltip: {
+    title: &quot;Which of the following categories best describes your property?&quot;,
+    placement: &quot;leftBottom&quot;,
+  },
+};
+
+exports.featuresProps = {
+  rules: [
+    {
+      type: &quot;array&quot;,
+      required: true,
+      message: &quot;Please specify at least one feature!&quot;,
+    },
+  ],
+  tooltip: {
+    title: &quot;Which of the following features best describe your property?&quot;,
+    placement: &quot;leftBottom&quot;,
+  },
+};
+
+exports.visibleProps = {
+  rules: [{ type: &quot;boolean&quot; }],
+  tooltip: {
+    title: &quot;Would you like other users to be able to see this listing?&quot;,
+  },
+};
+
+exports.underOfferProps = {
+  rules: [{ type: &quot;boolean&quot; }],
+  tooltip: {
+    title: &quot;Are you open to receiving offers on this property?&quot;,
+    placement: &quot;leftBottom&quot;,
+  },
+};
+
+exports.highPriorityProps = {
+  rules: [{ type: &quot;boolean&quot; }],
+  tooltip: {
+    title:
+      &quot;Would you like this property to take precedence over others in your portfolio?&quot;,
+    placement: &quot;leftBottom&quot;,
+  },
+};
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

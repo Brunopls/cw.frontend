@@ -31,9 +31,18 @@ import "./PropertyCreate.css";
 
 const { Option } = Select;
 
+/**
+ * Stateful component
+ * @class Property
+ * @extends {React.Component}
+ */
 class Property extends React.Component {
   constructor(props) {
     super(props);
+    /**
+     * @type {Object}
+     * @property {Boolean} loading
+     */
     this.state = {
       loading: false,
     };
@@ -41,11 +50,21 @@ class Property extends React.Component {
     this.loadCategories = this.loadCategories.bind(this);
   }
 
-  async componentDidMount() {
+  /**
+   * Makes API requests for features and categories then
+   * loads them into the component
+   * @memberof Property
+   */
+  componentDidMount() {
     this.loadFeatures();
     this.loadCategories();
   }
 
+  /**
+   * Checks if a property was successfully created, and if so
+   * sets a timer for 1 second and then redirects the user back to
+   * their 'My Properties' page
+   */
   componentDidUpdate() {
     const { successful } = this.state;
     if (successful)
@@ -55,10 +74,20 @@ class Property extends React.Component {
       );
   }
 
+  /**
+   * Clears the timeout created by 'componentDidUpdate'
+   */
   componentWillUnmount() {
     clearTimeout(this.redir);
   }
 
+  /**
+   * Form submission function
+   * Takes data from the 'createProperty' form and from
+   * props and uses it to make an API POST request
+   * @param {Object} values
+   * @memberof Property
+   */
   onFinish = (values) => {
     this.setState({ loading: true });
     const {
@@ -90,6 +119,10 @@ class Property extends React.Component {
       });
   };
 
+  /**
+   * Makes a request to the API for all property features
+   * @memberof Property
+   */
   loadFeatures() {
     this.setState({ loading: true });
     fetch(`${config.BACK_END_URL}/api/properties/features/`, {
@@ -109,6 +142,10 @@ class Property extends React.Component {
       });
   }
 
+  /**
+   * Makes a request to the API for all property categories
+   * @memberof Property
+   */
   loadCategories() {
     this.setState({ loading: true });
     fetch(`${config.BACK_END_URL}/api/properties/categories/`, {
@@ -127,7 +164,15 @@ class Property extends React.Component {
       });
   }
 
+  /**
+   * Renders the 'PropertyCreate' component.
+   * Whilst the API call is being made and the response is being validated, show a spinning circle
+   * If the call succeeds, show a 'success' message and redirect the user back to their 'My Properties' page
+   * If the call fails, show an 'error' message
+   * @memberof Property
+   */
   render() {
+    // Destructuring assignment for variables stored in state
     const {
       features,
       categories,
@@ -136,6 +181,8 @@ class Property extends React.Component {
       redirect,
       failed,
     } = this.state;
+
+    // Populates an array with feature objects so they can be used in the form
     const featureOptions = [];
     if (features) {
       features.map(({ _id, title }) =>
@@ -147,6 +194,7 @@ class Property extends React.Component {
       );
     }
 
+    // Populates an array with category objects so they can be used in the form
     const categoryOptions = [];
     if (categories) {
       categories.map(({ _id, title }) =>
@@ -158,10 +206,12 @@ class Property extends React.Component {
       );
     }
 
+    // If the page is loading, show a StyledSpin component
     if (loading) {
       return <StyledSpin />;
     }
 
+    // If the property was created successfully, show success message
     if (successful) {
       return (
         <Result
@@ -173,10 +223,12 @@ class Property extends React.Component {
       );
     }
 
+    // Redirect back to 'My Properties' page
     if (redirect) {
       return <Redirect to="/properties/own" />;
     }
 
+    // If the property couldn't be created, show error message
     if (failed) {
       return (
         <Result
@@ -187,6 +239,7 @@ class Property extends React.Component {
       );
     }
 
+    // Destructuring assignment for variables stored in 'propertiesFormProps.js'
     const { rules: titleRules, tooltip: titleTooltip } = titleProps;
     const {
       rules: descriptionRules,

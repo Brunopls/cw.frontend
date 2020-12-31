@@ -16,6 +16,10 @@ import { cardLayout } from "../../core/utilities/generalStyles";
 
 const { confirm } = Modal;
 
+/**
+ * @class MessageCard
+ * @extends {React.Component}
+ */
 class MessageCard extends React.Component {
   constructor(props) {
     super(props);
@@ -24,6 +28,10 @@ class MessageCard extends React.Component {
     this.showMessageInfo = this.showMessageInfo.bind(this);
   }
 
+  /**
+   * Show delete confirmation modal
+   * If user confirms, send DELETE request to API
+   */
   showDeleteConfirm() {
     const { user } = this.context;
     const { token } = user;
@@ -56,6 +64,10 @@ class MessageCard extends React.Component {
     });
   }
 
+  /**
+   * Show archival confirmation modal
+   * If user confirms, send PUT request to API
+   */
   showArchiveConfirm() {
     const { user } = this.context;
     const { token } = user;
@@ -88,6 +100,9 @@ class MessageCard extends React.Component {
     });
   }
 
+  /**
+   * Show modal containing the message details
+   */
   showMessageInfo() {
     const { inquirerEmail, dateSent, property, text } = this.props;
     const { title } = property;
@@ -110,6 +125,12 @@ class MessageCard extends React.Component {
     });
   }
 
+  /**
+   *
+   *
+   * @return {*}
+   * @memberof MessageCard
+   */
   render() {
     const actions = [
       <Space>
