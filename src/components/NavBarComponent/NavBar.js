@@ -3,11 +3,19 @@ import { Menu } from "antd";
 import { Link } from "react-router-dom";
 import UserContext from "../../core/contexts/user";
 
+/**
+ * Stateless component
+ * Shows a NavBar
+ */
 const Nav = () => {
+  // Uses our UserContext context to check if a user is authenticated
   const context = useContext(UserContext);
   const { user } = context;
   const { loggedIn } = user;
   let LoginNav;
+  /**
+   * Renders the items in the NavBar based on whether a used is authenticated or not
+   */
   if (!loggedIn) {
     LoginNav = (
       <>

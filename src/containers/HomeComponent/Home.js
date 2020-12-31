@@ -26,9 +26,28 @@ import "./Home.css";
 
 const { Option } = Select;
 
+/**
+ * Stateful component
+ * @class Home
+ * @extends {React.Component}
+ */
 class Home extends React.Component {
   constructor(props) {
     super(props);
+    /**
+     * @type {Object}
+     * @property {Integer} limit
+     * @property {Integer} page
+     * @property {Array} selectedFeature
+     * @property {Array} selectedCategories
+     * @property {String} query
+     *
+     * @property {Array} properties
+     * @property {Array} features
+     * @property {Array} categories
+     *
+     * @property {Boolean} loading
+     */
     this.state = {
       limit: 3,
       page: 1,
@@ -48,15 +67,31 @@ class Home extends React.Component {
     this.reloadProperties = this.reloadProperties.bind(this);
   }
 
+  /**
+   * Calls API and loads state with response data
+   */
   componentDidMount() {
     this.loadProperties();
   }
 
+  /**
+   * Called whenever a user changes page
+   * Sets a new value for 'page' in state and
+   * rerenders the component with data from
+   * a new API call matching the conditions in state
+   */
   async onChangePage(pageNumber) {
     await this.setState({ page: pageNumber });
     this.loadProperties();
   }
 
+  /**
+   * Form submission function
+   * Takes data from the 'search' form and from the
+   * state and uses it to make an API GET request
+   * @param {Object} values
+   * @memberof Home
+   */
   onFinish(values) {
     const { ...data } = values;
     this.setState((prevState) => ({
@@ -69,8 +104,14 @@ class Home extends React.Component {
     this.loadProperties();
   }
 
-  // If a user is logged in, return own properties where visible can be both true or null
-  // Doing this so this code can be reused for both the Home and MyProperties pages.
+  /**
+   * Makes a conditional GET request to the API for messages
+   * associated to the current user
+   *
+   * If a user is logged in, return own properties where visible can be both true or null
+   * Doing this so this code can be reused for both the Home and MyProperties pages.
+   * @memberof Home
+   */
   loadProperties() {
     const {
       limit,
@@ -106,11 +147,18 @@ class Home extends React.Component {
       });
   }
 
+  /**
+   * Calls the API again to reload the data in the component
+   */
   reloadProperties() {
     this.loadProperties();
     message.success("Property removed successfully!");
   }
 
+  /**
+   * Renders the 'Home' component
+   * @memberof Messages
+   */
   render() {
     const { loading, properties, limit, count } = this.state;
     const { ownProperties } = this.props;

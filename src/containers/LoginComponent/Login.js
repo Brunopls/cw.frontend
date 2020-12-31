@@ -10,9 +10,21 @@ import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
 
 import UserContext from "../../core/contexts/user";
 
+/**
+ * Stateful component
+ * @class LoginForm
+ * @extends {React.Component}
+ */
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
+    /**
+     * @type {Object}
+     * @property {Boolean} successful
+     * @property {Boolean} failed
+     * @property {Boolean} loading
+     * @property {Boolean} false
+     */
     this.state = {
       successful: false,
       failed: false,
@@ -22,6 +34,11 @@ class LoginForm extends React.Component {
     this.onFinish = this.onFinish.bind(this);
   }
 
+  /**
+   * Checks if the router has sent 'unauthorisedAccess' property in state
+   * This happens because, when a user tries to access a page they're not allowed to
+   * see, they'll be redirected back to the Login page, and this message will be shown
+   */
   componentDidMount() {
     const { location } = this.props;
     const { state } = location;
@@ -33,6 +50,10 @@ class LoginForm extends React.Component {
     }
   }
 
+  /**
+   * Checks if the login was successful, and if so, sets a timer for one second
+   * and then redirects the user to the 'My Properties' page
+   */
   componentDidUpdate() {
     const { successful } = this.state;
     if (successful)
@@ -42,10 +63,20 @@ class LoginForm extends React.Component {
       );
   }
 
+  /**
+   * Clear the timeout created by 'componentDidUpdate'
+   */
   componentWillUnmount() {
     clearTimeout(this.redir);
   }
 
+  /**
+   * Form submission function
+   * Takes data from the 'login' form and from the
+   * state and uses it to make an API POST request
+   * @param {Object} values
+   * @memberof LoginForm
+   */
   onFinish(values) {
     const { login } = this.context;
     this.setState({ loading: true });
@@ -68,6 +99,13 @@ class LoginForm extends React.Component {
       });
   }
 
+  /**
+   * Renders the 'LoginForm' component.
+   * Whilst the API call is being made and the response is being validated, show a spinning circle
+   * If the call succeeds, show a 'success' message and redirect the user back to their 'My Properties' page
+   * If the call fails, show an 'error' message
+   * @memberof LoginForm
+   */
   render() {
     const { loading, successful, redirect, failed } = this.state;
 

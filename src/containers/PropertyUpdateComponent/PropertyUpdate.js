@@ -31,6 +31,11 @@ import {
 
 const { Option } = Select;
 
+/**
+ * Stateful component
+ * @class PropertyUpdate
+ * @extends {React.Component}
+ */
 class PropertyUpdate extends React.Component {
   constructor(props) {
     super(props);
@@ -39,6 +44,13 @@ class PropertyUpdate extends React.Component {
         params: { id },
       },
     } = this.props;
+    /**
+     * @type {Object}
+     * @property {String} id
+     * @property {Boolean} successful
+     * @property {Boolean} failed
+     * @property {Boolean} loading
+     */
     this.state = {
       id,
       successful: false,
@@ -50,6 +62,9 @@ class PropertyUpdate extends React.Component {
     this.loadCategories = this.loadCategories.bind(this);
   }
 
+  /**
+   * Calls API and loads state with response data
+   */
   componentDidMount() {
     this.loadProperty();
     this.loadFeatures();
@@ -57,6 +72,11 @@ class PropertyUpdate extends React.Component {
     this.setState({ loading: false });
   }
 
+  /**
+   * Checks if a property was successfully updated, and if so
+   * sets a timer for 1 second and then redirects the user back to
+   * their 'My Properties' page
+   */
   componentDidUpdate() {
     const { successful } = this.state;
     if (successful)
@@ -66,10 +86,20 @@ class PropertyUpdate extends React.Component {
       );
   }
 
+  /**
+   * Clears the timeout created by 'componentDidUpdate'
+   */
   componentWillUnmount() {
     clearTimeout(this.redir);
   }
 
+  /**
+   * Form submission function
+   * Takes data from the 'updateProperty' form and from
+   * props and uses it to make an API PUT request
+   * @param {Object} values
+   * @memberof Property
+   */
   onFinish = (values) => {
     const { id } = this.state;
     const {
@@ -98,6 +128,10 @@ class PropertyUpdate extends React.Component {
       });
   };
 
+  /**
+   * Makes a request to the API for the property details
+   * @memberof Property
+   */
   loadProperty() {
     const { id } = this.state;
     fetch(`${config.BACK_END_URL}/api/properties/get/${id}`, {
@@ -117,6 +151,10 @@ class PropertyUpdate extends React.Component {
       });
   }
 
+  /**
+   * Makes a request to the API for all property features
+   * @memberof Property
+   */
   loadFeatures() {
     fetch(`${config.BACK_END_URL}/api/properties/features/`, {
       method: "GET",
@@ -134,6 +172,10 @@ class PropertyUpdate extends React.Component {
       });
   }
 
+  /**
+   * Makes a request to the API for all property categories
+   * @memberof Property
+   */
   loadCategories() {
     fetch(`${config.BACK_END_URL}/api/properties/categories/`, {
       method: "GET",
@@ -150,7 +192,15 @@ class PropertyUpdate extends React.Component {
       });
   }
 
+  /**
+   * Renders the 'PropertyUpdate' component
+   * Whilst the API call is being made and the response is being validated, show a spinning circle
+   * If the call succeeds, show a 'success' message and redirect the user back to their 'My Properties' page
+   * If the call fails, show an 'error' message
+   * @memberof Property
+   */
   render() {
+    // Destructuring assignment for variables stored in 'propertiesFormProps.js'
     const { rules: titleRules, tooltip: titleTooltip } = titleProps;
     const {
       rules: descriptionRules,
@@ -177,10 +227,12 @@ class PropertyUpdate extends React.Component {
     } = highPriorityProps;
     const { failed, successful, redirect, loading } = this.state;
 
+    // If the page is loading, show a StyledSpin component
     if (loading) {
       return <StyledSpin />;
     }
 
+    // If the property couldn't be updated, show error message
     if (failed) {
       return (
         <Result
@@ -201,6 +253,7 @@ class PropertyUpdate extends React.Component {
       );
     }
 
+    // If the property was updated successfully, show success message
     if (successful) {
       return (
         <Result
@@ -212,10 +265,14 @@ class PropertyUpdate extends React.Component {
       );
     }
 
+    // Redirect back to 'My Properties' page after successful API request
     if (redirect) {
       return <Redirect to="/properties/own" />;
     }
+
     const { property } = this.state;
+
+    // Render only when property data has been retrieved from API and loaded into state
     if (property !== undefined) {
       const {
         property: {

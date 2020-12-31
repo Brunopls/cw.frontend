@@ -4,12 +4,23 @@ import { Result } from "antd";
 import { withRouter } from "react-router-dom";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
 
+/**
+ * Error Boundary Component
+ * Catches an error in any component and shows an error page
+ * before redirecting the user back to 'Home' and refreshing the page
+ * @class ErrorComponent
+ * @extends {React.Component}
+ */
 class ErrorComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = { error: null, errorInfo: null, redirect: false };
   }
 
+  /**
+   * If an error is found, set a timer for 1.5s and then redirect
+   * the user back to 'Home'
+   */
   componentDidUpdate() {
     const { error } = this.state;
     if (error) {
@@ -17,6 +28,9 @@ class ErrorComponent extends React.Component {
     }
   }
 
+  /**
+   * Catches an error and loads its info into state
+   */
   componentDidCatch(error, errorInfo) {
     this.setState({
       error,
@@ -24,10 +38,17 @@ class ErrorComponent extends React.Component {
     });
   }
 
+  /**
+   * Clear the timeout created by 'componentDidUpdate'
+   */
   componentWillUnmount() {
     clearTimeout(this.redir);
   }
 
+  /**
+   * Renders the 'ErrorComponent'
+   * @memberof ErrorComponent
+   */
   render() {
     const { errorInfo, redirect } = this.state;
     if (redirect) {

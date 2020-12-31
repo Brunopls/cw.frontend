@@ -21,9 +21,20 @@ import UserContext from "../../core/contexts/user";
 
 import "./Messages.css";
 
+/**
+ * Stateful component
+ * @class Messages
+ * @extends {React.Component}
+ */
 class Messages extends React.Component {
   constructor(props) {
     super(props);
+    /**
+     * @type {Object}
+     * @property {Integer} limit
+     * @property {Integer} page
+     * @property {Boolean} loading
+     */
     this.state = {
       limit: 3,
       page: 1,
@@ -34,10 +45,20 @@ class Messages extends React.Component {
     this.onFinish = this.onFinish.bind(this);
   }
 
+  /**
+   * Calls API and loads state with response data
+   */
   componentDidMount() {
     this.loadMessages();
   }
 
+  /**
+   * Form submission function
+   * Takes data from the 'search' form and from the
+   * state and uses it to make an API GET request
+   * @param {Object} values
+   * @memberof Messages
+   */
   onFinish = (values) => {
     const { ...data } = values;
     this.setState((prevState) => ({
@@ -47,6 +68,11 @@ class Messages extends React.Component {
     this.loadMessages();
   };
 
+  /**
+   * Makes a conditional GET request to the API for messages
+   * associated to the current user
+   * @memberof Property
+   */
   loadMessages() {
     const { limit, page } = this.state;
     const { user } = this.props;
@@ -70,13 +96,21 @@ class Messages extends React.Component {
       .catch(() => {});
   }
 
+  /**
+   * Calls the API again to reload the data in the component
+   */
   reloadMessages() {
     this.loadMessages();
     message.success("Message archived successfully!");
   }
 
+  /**
+   * Renders the 'Messages' component
+   * @memberof Messages
+   */
   render() {
     const { messages, loading, limit, count } = this.state;
+    // Renders only when the messages have been retrieved from the API
     if (messages) {
       return (
         <>
@@ -146,6 +180,8 @@ class Messages extends React.Component {
         </>
       );
     }
+
+    // If the data still hasn't been retrieved, show a spinning circle
     return <StyledSpin />;
   }
 }

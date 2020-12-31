@@ -18,9 +18,22 @@ import config from "../../core/config.json";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
 import { emailRules, textRules } from "../../core/utilities/messageFormProps";
 
+/**
+ * Stateful component
+ * @class Property
+ * @extends {React.Component}
+ */
 class Property extends React.Component {
   constructor(props) {
     super(props);
+    /**
+     * @type {Object}
+     * @property {Object} property
+     * @property {Boolean} loading
+     * @property {Boolean} sendingMessage
+     * @property {Boolean} messageSentSuccessfully
+     * @property {Boolean} showMessageForm
+     */
     this.state = {
       property: {
         propertyCategory: {},
@@ -35,10 +48,18 @@ class Property extends React.Component {
     this.loadProperty = this.loadProperty.bind(this);
   }
 
+  /**
+   * Calls API and loads state with response data
+   */
   componentDidMount() {
     this.loadProperty();
   }
 
+  /**
+   * Checks if a message was successfully sent
+   * If this is true, wait for 2 seconds then
+   * show the message form again
+   */
   componentDidUpdate() {
     const { messageSentSuccessfully } = this.state;
     if (messageSentSuccessfully)
@@ -52,10 +73,20 @@ class Property extends React.Component {
       );
   }
 
+  /**
+   * Clear the timeout created by 'componentDidUpdate'
+   */
   componentWillUnmount() {
     clearTimeout(this.timeout);
   }
 
+  /**
+   * Form submission function
+   * Takes data from the 'message' form and from the
+   * state and uses it to make an API POST request
+   * @param {Object} values
+   * @memberof Property
+   */
   sendMessage = (values) => {
     let { ...data } = values;
     const {
@@ -89,6 +120,11 @@ class Property extends React.Component {
       .catch(() => {});
   };
 
+  /**
+   * Reads param 'id' value stored in props and uses it to
+   * make a conditional GET request to the API
+   * @memberof Property
+   */
   loadProperty() {
     const {
       match: {
@@ -115,12 +151,22 @@ class Property extends React.Component {
       });
   }
 
+  /**
+   * Renders the 'Property' component.
+   * If there is no property matching the ID in params, renders error page.
+   * If the data still hasn't been retrieved from the API, show a spinning circle.
+   * @memberof Property
+   */
   render() {
+    // Destructuring assignment for variables stored in state
     const { loading, failed } = this.state;
+
+    // If the page is loading, show a StyledSpin component
     if (loading) {
       return <StyledSpin />;
     }
 
+    // If the API call returned no values, show error
     if (failed) {
       return (
         <Result
@@ -131,6 +177,7 @@ class Property extends React.Component {
       );
     }
 
+    // Destructuring assignment for variables stored in state
     const {
       property: {
         propertyFeatures,
@@ -148,6 +195,7 @@ class Property extends React.Component {
       showMessageForm,
     } = this.state;
 
+    // Populates an array with feature objects
     const features = [];
     if (propertyFeatures) {
       propertyFeatures.map((feature) => features.push(feature));

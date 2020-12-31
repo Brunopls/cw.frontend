@@ -1,0 +1,74 @@
+{
+  "coverage": "7.14%",
+  "expectCount": 28,
+  "actualCount": 2,
+  "files": {
+    "src/App.js": {
+      "expectCount": 10,
+      "actualCount": 0,
+      "undocumentLines": [
+        27,
+        29,
+        33,
+        34,
+        36,
+        45,
+        49,
+        59,
+        66,
+        72
+      ]
+    },
+    "src/components/StyledSpinComponent/StyledSpin.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        6
+      ]
+    },
+    "src/containers/ErrorComponent/ErrorComponent.js": {
+      "expectCount": 8,
+      "actualCount": 0,
+      "undocumentLines": [
+        7,
+        8,
+        10,
+        13,
+        16,
+        20,
+        27,
+        31
+      ]
+    },
+    "src/containers/MyPropertiesComponent/MyProperties.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        6
+      ]
+    },
+    "src/core/contexts/user.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        3
+      ]
+    },
+    "src/core/utilities/requestHandlers.js": {
+      "expectCount": 2,
+      "actualCount": 2,
+      "undocumentLines": []
+    },
+    "src/serviceWorker.js": {
+      "expectCount": 5,
+      "actualCount": 0,
+      "undocumentLines": [
+        13,
+        23,
+        57,
+        101,
+        131
+      ]
+    }
+  }
+}

@@ -4,7 +4,14 @@ import { Result, List } from "antd";
 
 import PropertyCard from "../PropertyCardComponent/PropertyCard";
 
+/**
+ * Stateless component
+ * @param {Array<Object>} properties
+ * @param {Function} reloadProperties
+ * @param {Boolean} ownPropeties
+ */
 const PropertyList = ({ properties, reloadProperties, ownProperties }) => {
+  // If there are no properties, show error message
   if (!properties.length) {
     return (
       <Result
@@ -15,6 +22,10 @@ const PropertyList = ({ properties, reloadProperties, ownProperties }) => {
     );
   }
 
+  /**
+   * Return <List> component with 'properties' from props as a data source
+   * Renders a new <PropertyCard> component for each property
+   */
   return (
     <>
       <List

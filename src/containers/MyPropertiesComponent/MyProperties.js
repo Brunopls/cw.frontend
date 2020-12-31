@@ -3,6 +3,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import Home from "../HomeComponent/Home";
 
+/**
+ * Stateless component
+ * Returns a 'Home' component
+ * I created this because, at the time, I hadn't found a way to reutilise the Home component
+ * for both the "Home" and "MyProperties" pages
+ * @param {Object} user
+ */
 const MyProperties = ({ user }) => <Home ownProperties user={user} />;
 
 MyProperties.propTypes = {

@@ -4,7 +4,13 @@ import { Result, List } from "antd";
 
 import MessageCard from "../MessageCardComponent/MessageCard";
 
+/**
+ * Stateless component
+ * @param {*} { messages, reloadMessages }
+ * @return {*}
+ */
 const MessageList = ({ messages, reloadMessages }) => {
+  // If there are no messages to show, show error message
   if (!messages.length) {
     return (
       <Result
@@ -14,6 +20,10 @@ const MessageList = ({ messages, reloadMessages }) => {
       />
     );
   }
+  /**
+   * Return <List> component with 'messages' from props as a data source
+   * Renders a new <MessageCard> component for each message
+   */
   return (
     <>
       <List

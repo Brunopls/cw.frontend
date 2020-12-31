@@ -17,12 +17,20 @@ import { cardLayout } from "../../core/utilities/generalStyles";
 
 const { confirm } = Modal;
 
+/**
+ * @class PropertyCard
+ * @extends {React.Component}
+ */
 class PropertyCard extends React.Component {
   constructor(props) {
     super(props);
     this.showDeleteConfirm = this.showDeleteConfirm.bind(this);
   }
 
+  /**
+   * Show delete confirmation modal
+   * If user confirms, send DELETE request to API
+   */
   showDeleteConfirm() {
     const { user } = this.context;
     const { token } = user;
@@ -54,6 +62,10 @@ class PropertyCard extends React.Component {
     });
   }
 
+  /**
+   * Renders the 'MessageCard' component
+   * @memberof MessageCard
+   */
   render() {
     const {
       _id,

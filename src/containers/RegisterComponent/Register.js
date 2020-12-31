@@ -12,9 +12,20 @@ import {
 } from "../../core/utilities/authRules";
 import StyledSpin from "../../components/StyledSpinComponent/StyledSpin";
 
+/**
+ * Stateful component
+ * @class RegisterForm
+ * @extends {React.Component}
+ */
 class RegisterForm extends React.Component {
   constructor(props) {
     super(props);
+    /**
+     * @type {Object}
+     * @property {Boolean} successful
+     * @property {Boolean} failed
+     * @property {Boolean} loading
+     */
     this.state = {
       successful: false,
       failed: false,
@@ -23,6 +34,13 @@ class RegisterForm extends React.Component {
     this.onFinish = this.onFinish.bind(this);
   }
 
+  /**
+   * Form submission function
+   * Takes data from the 'register' form and from
+   * props and uses it to make an API POST request
+   * @param {Object} values
+   * @memberof Property
+   */
   onFinish = (values) => {
     this.setState({ loading: true });
     const { confirm, ...data } = values; // ignore the 'confirm' value in data sent
@@ -43,11 +61,22 @@ class RegisterForm extends React.Component {
       });
   };
 
+  /**
+   * Renders the 'RegisterForm' component
+   * Whilst the API call is being made and the response is being validated, show a spinning circle
+   * If the call succeeds, show a 'success' message and redirect the user back to their 'My Properties' page
+   * If the call fails, show an 'error' message
+   * @memberof RegisterForm
+   */
   render() {
     const { loading, successful, failed } = this.state;
+
+    // If the page is loading, show a StyledSpin component
     if (loading) {
       return <StyledSpin />;
     }
+
+    // If the user was registered successfully, show success message
     if (successful) {
       return (
         <Result
@@ -65,6 +94,7 @@ class RegisterForm extends React.Component {
       );
     }
 
+    // If the registration couldn't be made, show error message
     if (failed) {
       return (
         <Result
