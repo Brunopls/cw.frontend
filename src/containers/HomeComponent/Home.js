@@ -128,8 +128,8 @@ class Home extends React.Component {
       `${
         config.BACK_END_URL
       }/api/properties/?limit=${limit}&page=${page}&query=${query}&features=${selectedFeatures}&categories=${selectedCategories}&user=${
-        userID === undefined ? "" : `${userID}&onlyVisible=false`
-      }`,
+        userID === undefined ? "" : `${userID}`
+      }&onlyVisible=${userID === undefined ? "true" : "false"}`,
       {
         method: "GET",
       }
