@@ -39,9 +39,11 @@ class Messages extends React.Component {
       limit: 3,
       page: 1,
       loading: false,
+      showArchived: false,
     };
     this.loadMessages = this.loadMessages.bind(this);
     this.reloadMessages = this.reloadMessages.bind(this);
+    this.toggleShowArchived = this.toggleShowArchived.bind(this);
     this.onFinish = this.onFinish.bind(this);
   }
 
@@ -69,21 +71,37 @@ class Messages extends React.Component {
   };
 
   /**
+   * Toggles the boolean value of 'showArchived'
+   */
+  toggleShowArchived() {
+    this.setState((prevState) => ({
+      showArchived: !prevState.showArchived,
+    }));
+  }
+
+  /**
    * Makes a conditional GET request to the API for messages
    * associated to the current user
    * @memberof Property
    */
   loadMessages() {
-    const { limit, page } = this.state;
+    const { limit, page, showArchived } = this.state;
     const { user } = this.props;
     const { token } = user;
     this.setState({ loading: true });
-    fetch(`${config.BACK_END_URL}/api/messages/?limit=${limit}&page=${page}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    fetch(
+      `${
+        config.BACK_END_URL
+      }/api/messages/?limit=${limit}&page=${page}&showArchived=${
+        showArchived || ""
+      }`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
       .then(status)
       .then(json)
       .then((response) => {
@@ -133,6 +151,25 @@ class Messages extends React.Component {
               sm={{ span: 24 }}
               xs={{ span: 24 }}
             >
+              <Card style={{ marginLeft: 10 }} title="Search Options">
+                <Form
+                  name="searchOptions"
+                  onFinish={this.onFinish}
+                  labelCol={{ xs: { span: 24 }, sm: { span: 6 } }}
+                  wrapperCol={{ xs: { span: 24 }, sm: { span: 12 } }}
+                  scrollToFirstError
+                >
+                  <Form.Item>
+                    <Button
+                      htmlType="submit"
+                      onClick={this.toggleShowArchived}
+                      block
+                    >
+                      Toggle Archived Posts
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Card>
               <Card style={{ marginLeft: 10 }} title="Search Parameters">
                 <Form
                   name="search"
